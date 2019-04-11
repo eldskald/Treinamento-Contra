@@ -108,6 +108,9 @@ angular_damp = 0.0
 position = Vector2( 0, 1 )
 shape = SubResource( 6 )
 
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+
 [connection signal="area_entered" from="Left Detector" to="." method="_on_left_area_entered"]
 [connection signal="area_exited" from="Left Detector" to="." method="_on_left_area_exited"]
 [connection signal="body_entered" from="Left Detector" to="." method="_on_left_body_entered"]

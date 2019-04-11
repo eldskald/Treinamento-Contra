@@ -10,9 +10,12 @@ export(float) var GLIDING_FALL_SPEED = 100         # Falling speed when gliding.
 export(float) var FAST_FALL_MULTIPLIER = 3         # Speed and gravity multiplier when fast falling.
 export(float) var WALL_FALL = 50                   # Falling speed in pixels per second when sliding down a wall.
 export(float) var COYOTE_JUMP = 80                 # Pity timer of a coyote jump on miliseconds.
+export(float) var DODGE_DISTANCE = 200             # Distance in pixels covered by a dodge.
+export(float) var DODGE_DURATION = 300             # Duration in miliseconds of a dodge.
+export(float) var DODGE_INVINCIBILITY = 200        # Time in miliseconds of invincibility after starting a dodge.
 export(float) var RATE_OF_FIRE = 200               # Cooldown in miliseconds before being able to fire again.
 
-var velocity = Vector2()   # Player's velocity vector
+var velocity = Vector2()      # Player's velocity vector
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
 var earlyJumpInput = false    # True when player is pressing the jump button on an early jump window.
@@ -22,6 +25,7 @@ var leftLedge = false         # True if the character is hanging from a platform
 var rightLedge = false        # True if the character is hanging from a platform ledge on his right.
 var leftLedgeAnim = false     # True if the character is jumping from a ledge onto a platform on the left.
 var rightLedgeAnim = false    # True if the character is jumping from a ledge onto a platform on the right.
+var dodgeAnim = false         # True when the player is on a dodge animation.
 var animTimer = -1            # Timer count for animations.
 
 var upPressed = false     # True when the player pressed any up button or tilted the left stick up.
@@ -45,9 +49,9 @@ var leftWall2 = 0             # Counts how many bodies the left wall detector 2 
 var rightWall = 0             # Counts how many bodies the right wall detector finds.
 var rightWall2 = 0            # Counts how many bodies the right wall detector 2 finds.
 
-var bullet = preload("res://prefabs/Bullet.tscn")        # Projectile prefab shot by the player
-var shootingDirection = Vector2(1, 0)                    # The direction the player is shooting
-var shootingCooldown = 0                                 # Timer to shoot again
+var bullet = preload("res://prefabs/Bullet.tscn")        # Projectile prefab shot by the player.
+var shootingDirection = Vector2(1, 0)                    # The direction the player is shooting.
+var shootingCooldown = 0                                 # Timer to shoot again.
 
 func _physics_process(delta):
 	
@@ -63,6 +67,7 @@ func _physics_process(delta):
 			_moving(delta)
 	
 	_jumping(delta)
+	_dodging(delta)
 	_shooting(delta)
 	
 	velocity = move_and_slide(velocity, Vector2(0,-1))
@@ -297,6 +302,16 @@ func _jumping(delta):
 		elif velocity.y < MAX_FALLING_SPEED*fallSpeed and velocity.y + GRAVITY*fallSpeed*delta >= MAX_FALLING_SPEED*fallSpeed:
 			velocity.y = MAX_FALLING_SPEED*fallSpeed
 
+# This function handles dodging. Dodges are not only a way of traversal as a way to defend against projectiles and
+# enemies. It is designed to work as a quick dash in the direction the player is pressing on the move inputs, covering
+# a vertical distance and/or horizontal distance equal to DODGE_DISTANCE pixels in DODGE_DURATION miliseconds. The player
+# is invincible for DODGE_INVINCIBILITY miliseconds after a pushing the dodge button, going through all projectiles
+# and enemy hitboxes.
+
+func _dodging(delta):
+	if Input.is_action_just_pressed("ui_dodge"):
+		pass
+
 # These next two functions handle the shooting. This first one detects the direction of the input
 
 func _shooting(delta):
@@ -322,6 +337,10 @@ func _shoot():
 		parent.add_child(projectile)
 		projectile.position = position
 		projectile.direction = shootingDirection.normalized()
+
+func _take_damage(damage):
+	velocity = Vector2(0,0)
+	position = Vector2(176,192)
 
 # These wall detectors allow for detection of walls and which side of the player they're touching. It also only detects
 # nodes on the 'wall' group. This is better than is_on_wall() because it tells the direction the wall is on and it only
