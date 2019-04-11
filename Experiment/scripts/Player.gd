@@ -6,6 +6,7 @@ export(float) var GRAVITY = 1800                   # Gravity's acceleration in p
 export(float) var JUMP_SPEED = 600                 # Vertical initial speed of a jump in pixels per second.
 export(float) var WALL_JUMP_SPEED = 400            # Vertical initial speed of a wall jump in pixels per second.
 export(float) var MAX_FALLING_SPEED = 600          # Maximum falling speed in pixels per second.
+export(float) var GLIDING_FALL_SPEED = 100         # Falling speed when gliding.
 export(float) var FAST_FALL_MULTIPLIER = 3         # Speed and gravity multiplier when fast falling.
 export(float) var WALL_FALL = 50                   # Falling speed in pixels per second when sliding down a wall.
 export(float) var COYOTE_JUMP = 80                 # Pity timer of a coyote jump on miliseconds.
@@ -189,7 +190,7 @@ func _jumping(delta):
 	# happening, allowing the game to recognize jump inputs in a certain window given by the second wall detector hitboxes.
 	# See the second wall detector description on this script.
 	
-	if touchFloor2 > 0 and touchFloor == 0 and Input.is_action_just_pressed("ui_jump"):
+	if (touchFloor2 > 0 or (downHold and velocity.y >= MAX_FALLING_SPEED)) and touchFloor == 0 and Input.is_action_just_pressed("ui_jump"):
 		earlyJumpInput = true
 	if touchFloor > 0 and earlyJumpInput and Input.is_action_pressed("ui_jump"):
 		earlyJumpInput = false
@@ -280,9 +281,14 @@ func _jumping(delta):
 		velocity.y = WALL_FALL
 	elif (leftLedge or rightLedge) and !wallJumpInput and !(leftLedgeAnim or rightLedgeAnim):
 		velocity.y = 0
+	elif (upHold or Input.is_action_pressed("ui_jump")) and !earlyJumpInput and !downHold and leftWall == 0 and rightWall == 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
+		if velocity.y < GLIDING_FALL_SPEED and velocity.y + GRAVITY*delta < GLIDING_FALL_SPEED:
+			velocity.y += GRAVITY*delta
+		elif velocity.y >= GLIDING_FALL_SPEED:
+			velocity.y = GLIDING_FALL_SPEED
 	else:
 		var fallSpeed
-		if downHold and velocity.y >= 0:
+		if downHold and !upHold and velocity.y >= 0:
 			fallSpeed = FAST_FALL_MULTIPLIER
 		else:
 			fallSpeed = 1
@@ -313,9 +319,9 @@ func _shoot():
 		shootingCooldown = RATE_OF_FIRE / 1000
 		var parent = get_parent()
 		var projectile = bullet.instance()
-		projectile.position = position + shootingDirection.normalized()*30
-		projectile.direction = shootingDirection.normalized()
 		parent.add_child(projectile)
+		projectile.position = position
+		projectile.direction = shootingDirection.normalized()
 
 # These wall detectors allow for detection of walls and which side of the player they're touching. It also only detects
 # nodes on the 'wall' group. This is better than is_on_wall() because it tells the direction the wall is on and it only
@@ -339,7 +345,7 @@ func _on_right_body_exited(body):
 
 func _on_left_area_entered(area):
 	if area.is_in_group("ledge") and leftWall > 0:
-		if self.position.y - area.position.y >= 10:
+		if self.position.y - area.position.y >= 6:
 			self.position.y = area.position.y + 16
 			velocity = Vector2(0,0)
 			leftLedge = true
@@ -356,7 +362,7 @@ func _on_left_area_exited(area):
 
 func _on_right_area_entered(area):
 	if area.is_in_group("ledge") and rightWall > 0:
-		if self.position.y - area.position.y >= 10:
+		if self.position.y - area.position.y >= 6:
 			self.position.y = area.position.y + 16
 			velocity = Vector2(0,0)
 			rightLedge = true
