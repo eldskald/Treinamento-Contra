@@ -1,12 +1,17 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://prefabs/Enemy Projectile/Basic Enemy Projectile.gd" type="Script" id=1]
+[ext_resource path="res://scripts/Basic Enemy Projectile.gd" type="Script" id=1]
 [ext_resource path="res://sprites/BlackTriangle.png" type="Texture" id=2]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 
 [node name="Basic Enemy Projectile" type="Area2D"]
+rotation = 1.5708
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+SPEED = 200.0
 
 [node name="Sprite" type="Sprite" parent="."]
 self_modulate = Color( 0, 0, 0, 1 )
