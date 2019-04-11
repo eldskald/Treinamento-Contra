@@ -10,6 +10,7 @@
 ]]
 script = ExtResource( 1 )
 gravityAccel = 1800.0
+maxHealth = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
 modulate = Color( 1, 0, 0, 1 )

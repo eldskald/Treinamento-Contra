@@ -3,8 +3,9 @@ extends Area2D
 export(float) var SPEED
 export(float) var damage
 
-var angle = direction.angle()
 var direction = Vector2()
+var angle = direction.angle()
+
 func _physics_process(delta):
 	position += SPEED*direction*delta
 
