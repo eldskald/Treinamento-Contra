@@ -1,0 +1,126 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://scripts/Player.gd" type="Script" id=1]
+[ext_resource path="res://sprites/SmallPurple.png" type="Texture" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 1, 16 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 1, 16 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 8, 16 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 16, 1 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 16, 16 )
+
+[node name="Player" type="KinematicBody2D" groups=[
+"player",
+]]
+position = Vector2( 176, 192 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Hitbox" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 2 )
+
+[node name="Left Detector" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( -16, 0 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Left Detector"]
+shape = SubResource( 2 )
+
+[node name="Right Detector" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( 16, 0 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Right Detector"]
+shape = SubResource( 3 )
+
+[node name="Left Detector 2" type="Area2D" parent="."]
+position = Vector2( -24, 0 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Left Detector 2"]
+shape = SubResource( 4 )
+
+[node name="Right Detector 2" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( 24, 0 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Right Detector 2"]
+shape = SubResource( 4 )
+
+[node name="Floor Detector" type="Area2D" parent="."]
+position = Vector2( 0, 16 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor Detector"]
+position = Vector2( 0, 1 )
+shape = SubResource( 5 )
+
+[node name="Floor Detector 2" type="Area2D" parent="."]
+position = Vector2( 0, 32 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor Detector 2"]
+position = Vector2( 0, 1 )
+shape = SubResource( 6 )
+
+[connection signal="area_entered" from="Left Detector" to="." method="_on_left_area_entered"]
+[connection signal="area_exited" from="Left Detector" to="." method="_on_left_area_exited"]
+[connection signal="body_entered" from="Left Detector" to="." method="_on_left_body_entered"]
+[connection signal="body_exited" from="Left Detector" to="." method="_on_left_body_exited"]
+[connection signal="area_entered" from="Right Detector" to="." method="_on_right_area_entered"]
+[connection signal="area_exited" from="Right Detector" to="." method="_on_right_area_exited"]
+[connection signal="body_entered" from="Right Detector" to="." method="_on_right_body_entered"]
+[connection signal="body_exited" from="Right Detector" to="." method="_on_right_body_exited"]
+[connection signal="body_entered" from="Left Detector 2" to="." method="_on_left2_body_entered"]
+[connection signal="body_exited" from="Left Detector 2" to="." method="_on_left2_body_exited"]
+[connection signal="body_entered" from="Right Detector 2" to="." method="_on_right2_body_entered"]
+[connection signal="body_exited" from="Right Detector 2" to="." method="_on_right2_body_exited"]
+[connection signal="body_entered" from="Floor Detector" to="." method="_on_down_body_entered"]
+[connection signal="body_exited" from="Floor Detector" to="." method="_on_down_body_exited"]
+[connection signal="body_entered" from="Floor Detector 2" to="." method="_on_down2_body_entered"]
+[connection signal="body_exited" from="Floor Detector 2" to="." method="_on_down2_body_exited"]
