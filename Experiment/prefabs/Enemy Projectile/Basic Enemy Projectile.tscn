@@ -24,3 +24,4 @@ position = Vector2( -0.0769463, 2.38529 )
 scale = Vector2( 0.346907, 1.09364 )
 shape = SubResource( 1 )
 
+[connection signal="body_entered" from="." to="." method="_on_Basic_Enemy_Projectile_body_entered"]
