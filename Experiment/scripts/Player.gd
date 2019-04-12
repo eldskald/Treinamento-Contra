@@ -9,17 +9,18 @@ export(float) var MAX_FALLING_SPEED = 600          # Maximum falling speed in pi
 export(float) var GLIDING_FALL_SPEED = 100         # Falling speed when gliding.
 export(float) var FAST_FALL_MULTIPLIER = 3         # Speed and gravity multiplier when fast falling.
 export(float) var WALL_FALL = 50                   # Falling speed in pixels per second when sliding down a wall.
+export(float) var EARLY_JUMP = 80                  # Pity timer for an early jump on miliseconds
 export(float) var COYOTE_JUMP = 80                 # Pity timer of a coyote jump on miliseconds.
-export(float) var DODGE_DISTANCE = 200             # Distance in pixels covered by a dodge.
-export(float) var DODGE_DURATION = 300             # Duration in miliseconds of a dodge.
-export(float) var DODGE_INVINCIBILITY = 200        # Time in miliseconds of invincibility after starting a dodge.
-export(float) var RATE_OF_FIRE = 200               # Cooldown in miliseconds before being able to fire again.
+export(float) var DODGE_DISTANCE = 128             # Distance in pixels covered by a dodge.
+export(float) var DODGE_DURATION = 150             # Duration in miliseconds of a dodge.
+export(float) var DODGE_INVINCIBILITY = 120        # Time in miliseconds of invincibility after starting a dodge.
+export(float) var RATE_OF_FIRE = 400               # Cooldown in miliseconds before being able to fire again.
 
 var velocity = Vector2()      # Player's velocity vector
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
-var earlyJumpInput = false    # True when player is pressing the jump button on an early jump window.
 var wallJumpInput = false     # For wall jump, works almost in the same way as jumpInput.
+var earlyTime = -1            # Early jump pity timer countdown.
 var coyoteTime = -1           # Coyote jump pity timer countdown.
 var leftLedge = false         # True if the character is hanging from a platform ledge on his left.
 var rightLedge = false        # True if the character is hanging from a platform ledge on his right.
@@ -27,6 +28,8 @@ var leftLedgeAnim = false     # True if the character is jumping from a ledge on
 var rightLedgeAnim = false    # True if the character is jumping from a ledge onto a platform on the right.
 var dodgeAnim = false         # True when the player is on a dodge animation.
 var animTimer = -1            # Timer count for animations.
+var playerFacing = 1          # Equals 1 when facing right and -1 when facing left.
+var dodgeAvailable = true     # True when the player can dodge.
 
 var upPressed = false     # True when the player pressed any up button or tilted the left stick up.
 var leftPressed = false   # True when the player pressed any left button or tilted the left stick left.
@@ -43,7 +46,6 @@ var rightReleased = false # True when the player released any right button or re
 var stickInput = 10       # Used to aid the function that gets directional inputs.
 
 var touchFloor = 0            # Counts how many bodies the floor detector finds.
-var touchFloor2 = 0           # Counts how many bodies the floor detector 2 finds.
 var leftWall = 0              # Counts how many bodies the left wall detector finds.
 var leftWall2 = 0             # Counts how many bodies the left wall detector 2 finds.
 var rightWall = 0             # Counts how many bodies the right wall detector finds.
@@ -57,18 +59,18 @@ func _physics_process(delta):
 	
 	_directional_inputs()
 	
-	if leftLedgeAnim or rightLedgeAnim:
-		if (rightHold  or leftHold) and animTimer > 0.2:
-			leftLedgeAnim = false
-			rightLedgeAnim = false
-			animTimer = -1
-	else:
-		if !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
-			_moving(delta)
-	
-	_jumping(delta)
+	if !dodgeAnim:
+		if leftLedgeAnim or rightLedgeAnim:
+			if (rightHold  or leftHold) and animTimer > 0.2:
+				leftLedgeAnim = false
+				rightLedgeAnim = false
+				animTimer = -1
+		else:
+			if !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
+				_moving(delta)
+		_jumping(delta)
+		_shooting(delta)
 	_dodging(delta)
-	_shooting(delta)
 	
 	velocity = move_and_slide(velocity, Vector2(0,-1))
 
@@ -76,18 +78,18 @@ func _physics_process(delta):
 # should yield this, which means there should be lots of things to read instead of just the action.
 
 func _directional_inputs():
-	var buttonUpPressed = Input.is_action_just_pressed("ui_up") or Input.is_action_just_pressed("ui_page_up") or Input.is_action_just_pressed("ui_home")
-	var buttonLeftPressed = Input.is_action_just_pressed("ui_left") or Input.is_action_just_pressed("ui_home") or Input.is_action_just_pressed("ui_end")
-	var buttonDownPressed = Input.is_action_just_pressed("ui_down") or Input.is_action_just_pressed("ui_end") or Input.is_action_just_pressed("ui_page_down")
-	var buttonRightPressed = Input.is_action_just_pressed("ui_right") or Input.is_action_just_pressed("ui_page_down") or Input.is_action_just_pressed("ui_page_up")
-	var buttonUpHold = Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_page_up") or Input.is_action_pressed("ui_home")
-	var buttonLeftHold = Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_home") or Input.is_action_pressed("ui_end")
-	var buttonDownHold = Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_end") or Input.is_action_pressed("ui_page_down")
-	var buttonRightHold = Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_page_down") or Input.is_action_pressed("ui_page_up")
-	var buttonUpReleased = Input.is_action_just_released("ui_up") or Input.is_action_just_released("ui_page_up") or Input.is_action_just_released("ui_home")
-	var buttonLeftReleased = Input.is_action_just_released("ui_left") or Input.is_action_just_released("ui_home") or Input.is_action_just_released("ui_end")
-	var buttonDownReleased = Input.is_action_just_released("ui_down") or Input.is_action_just_released("ui_end") or Input.is_action_just_released("ui_page_down")
-	var buttonRightReleased = Input.is_action_just_released("ui_right") or Input.is_action_just_released("ui_page_down") or Input.is_action_just_released("ui_page_up")
+	var buttonUpPressed = Input.is_action_just_pressed("ui_up")
+	var buttonLeftPressed = Input.is_action_just_pressed("ui_left")
+	var buttonDownPressed = Input.is_action_just_pressed("ui_down")
+	var buttonRightPressed = Input.is_action_just_pressed("ui_right")
+	var buttonUpHold = Input.is_action_pressed("ui_up")
+	var buttonLeftHold = Input.is_action_pressed("ui_left")
+	var buttonDownHold = Input.is_action_pressed("ui_down")
+	var buttonRightHold = Input.is_action_pressed("ui_right")
+	var buttonUpReleased = Input.is_action_just_released("ui_up")
+	var buttonLeftReleased = Input.is_action_just_released("ui_left")
+	var buttonDownReleased = Input.is_action_just_released("ui_down")
+	var buttonRightReleased = Input.is_action_just_released("ui_right")
 	
 	# This code handles the left stick inputs.
 	
@@ -164,6 +166,8 @@ func _moving(delta):
 					velocity.x = MAXIMUM_SPEED
 			elif velocity.x < 0:
 				velocity.x = 0
+			if !((leftWall > 0 or rightWall > 0) and touchFloor == 0):
+				playerFacing = 1
 	elif !rightHold and leftHold:
 		if !(leftWall2 > 0 and wallJumpInput):
 			if velocity.x <= 0 and velocity.x > -MAXIMUM_SPEED:
@@ -173,6 +177,8 @@ func _moving(delta):
 					velocity.x = -MAXIMUM_SPEED
 			elif velocity.x > 0:
 				velocity.x = 0
+			if !((leftWall > 0 or rightWall > 0) and touchFloor == 0):
+				playerFacing = -1
 	elif !wallJumpInput:
 		velocity.x = 0
 
@@ -192,19 +198,22 @@ func _jumping(delta):
 	
 	# This part handles the early jumps. When the player wants to make consecutive jumps, it is easy to press the jump
 	# too soon, before the character actually hits the ground, which results in no jump at all. This code prevents it from
-	# happening, allowing the game to recognize jump inputs in a certain window given by the second wall detector hitboxes.
-	# See the second wall detector description on this script.
+	# happening, allowing the game to recognize jump inputs in a certain window of time given by EARLY_JUMP.
 	
-	if (touchFloor2 > 0 or (downHold and velocity.y >= MAX_FALLING_SPEED)) and touchFloor == 0 and Input.is_action_just_pressed("ui_jump"):
-		earlyJumpInput = true
-	if touchFloor > 0 and earlyJumpInput and Input.is_action_pressed("ui_jump"):
-		earlyJumpInput = false
+	if touchFloor == 0 and Input.is_action_just_pressed("ui_jump"):
+		earlyTime = 0
+	if touchFloor == 0 and earlyTime >= 0 and Input.is_action_pressed("ui_jump"):
+		earlyTime += delta
+		if earlyTime > EARLY_JUMP / 1000:
+			earlyTime = -1
+	elif touchFloor > 0 and earlyTime >= 0 and Input.is_action_pressed("ui_jump"):
+		earlyTime = -1
 		jumpInput = true
 		velocity.y = -JUMP_SPEED
-	elif touchFloor > 0 and earlyJumpInput:
-		earlyJumpInput = false
+	elif touchFloor > 0 and earlyTime >= 0:
+		earlyTime = -1
 	
-	# Coyote jump is designed to allow easier jumps out of corners. If the player jumps after leaving the platform,
+	# A coyote jump is designed to allow easier jumps out of corners. If the player jumps after leaving the platform,
 	# they will not jump. This gives them a window of COYOTE_JUMP miliseconds to jump right after leaving a platform,
 	# making those jumps much easier, providing a better game feel and character control.
 	
@@ -273,27 +282,35 @@ func _jumping(delta):
 			rightLedgeAnim = false
 			animTimer = -1
 	
-	# This code handles letting go of ledges.
+	# This code handles letting go of ledges and walls.
 	
-	if leftLedge and downPressed:
+	if leftWall > 0 and downHold:
 		position.x += 5
-	if rightLedge and downPressed:
+	if rightWall > 0 and downHold:
 		position.x -= 5
 	
 	# This part of the code handles gravity and sliding down walls.
 	
 	if (leftWall > 0 or rightWall > 0) and velocity.y >= 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
 		velocity.y = WALL_FALL
+		if leftWall > 0 and playerFacing != 1:
+			playerFacing = 1
+		elif rightWall > 0 and playerFacing != -1:
+			playerFacing = -1
 	elif (leftLedge or rightLedge) and !wallJumpInput and !(leftLedgeAnim or rightLedgeAnim):
 		velocity.y = 0
-	elif (upHold or Input.is_action_pressed("ui_jump")) and !earlyJumpInput and !downHold and leftWall == 0 and rightWall == 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
+		if leftWall > 0 and playerFacing != 1:
+			playerFacing = 1
+		elif rightWall > 0 and playerFacing != -1:
+			playerFacing = -1
+	elif Input.is_action_pressed("ui_jump") and earlyTime == -1 and !downHold and leftWall == 0 and rightWall == 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
 		if velocity.y < GLIDING_FALL_SPEED and velocity.y + GRAVITY*delta < GLIDING_FALL_SPEED:
 			velocity.y += GRAVITY*delta
 		elif velocity.y >= GLIDING_FALL_SPEED:
 			velocity.y = GLIDING_FALL_SPEED
 	else:
 		var fallSpeed
-		if downHold and !upHold and velocity.y >= 0:
+		if downHold and !upHold and velocity.y >= 0 and leftWall == 0 and rightWall == 0:
 			fallSpeed = FAST_FALL_MULTIPLIER
 		else:
 			fallSpeed = 1
@@ -306,11 +323,41 @@ func _jumping(delta):
 # enemies. It is designed to work as a quick dash in the direction the player is pressing on the move inputs, covering
 # a vertical distance and/or horizontal distance equal to DODGE_DISTANCE pixels in DODGE_DURATION miliseconds. The player
 # is invincible for DODGE_INVINCIBILITY miliseconds after a pushing the dodge button, going through all projectiles
-# and enemy hitboxes.
+# and enemy hitboxes. After dodging in the air, the player must hit the ground, jump off of a projectile or cling to
+# a wall to be able to dodge again.
 
 func _dodging(delta):
-	if Input.is_action_just_pressed("ui_dodge"):
-		pass
+	if touchFloor > 0 or leftWall > 0 or rightWall > 0:
+		dodgeAvailable = true
+	if Input.is_action_just_pressed("ui_dodge") and !dodgeAnim and dodgeAvailable:
+		dodgeAnim = true
+		dodgeAvailable = false
+		leftLedgeAnim = false
+		rightLedgeAnim = false
+		animTimer = 0
+		var direction = Vector2(playerFacing, 0)
+		if upHold:
+			direction = Vector2(0,-1)
+		if downHold:
+			direction = Vector2(0,1)
+		if leftHold and !(leftWall > 0 and touchFloor == 0):
+			direction.x = -1
+		if rightHold and !(rightWall > 0 and touchFloor == 0):
+			direction.x = 1
+		velocity = direction * DODGE_DISTANCE/(DODGE_DURATION/1000)
+		set_collision_layer(2)
+		set_collision_mask(2)
+	elif dodgeAnim:
+		animTimer += delta
+		if animTimer >= DODGE_INVINCIBILITY/1000:
+			set_collision_layer(1)
+			set_collision_mask(1)
+		if animTimer >= DODGE_DURATION/1000 or get_slide_count() > 0:
+			set_collision_layer(1)
+			set_collision_mask(1)
+			velocity = Vector2(0,0)
+			dodgeAnim = false
+			animTimer = -1
 
 # These next two functions handle the shooting. This first one detects the direction of the input
 
@@ -321,12 +368,36 @@ func _shooting(delta):
 	var stick = Vector2(Input.get_joy_axis(0, JOY_ANALOG_RX), Input.get_joy_axis(0, JOY_ANALOG_RY))
 	if stick.length() > 0.2:
 		shootingDirection = stick
-	if Input.is_action_pressed("ui_shoot_1"):
 		_shoot()
 	
 	if Input.is_action_pressed("ui_mouse_left_click"):
 		shootingDirection = get_viewport().get_mouse_position()
 		shootingDirection = Vector2(shootingDirection.x - self.get_global_transform_with_canvas().origin.x, shootingDirection.y - self.get_global_transform_with_canvas().origin.y)
+		_shoot()
+	
+	if Input.is_action_pressed("ui_shoot_up") and !Input.is_action_pressed("ui_shoot_left") and !Input.is_action_pressed("ui_shoot_right"):
+		shootingDirection = Vector2(0,-1)
+		_shoot()
+	elif Input.is_action_pressed("ui_page_up") or (Input.is_action_pressed("ui_shoot_up") and Input.is_action_pressed("ui_shoot_right")):
+		shootingDirection = Vector2(1,-1)
+		_shoot()
+	elif Input.is_action_pressed("ui_shoot_right") and !Input.is_action_pressed("ui_shoot_up") and !Input.is_action_pressed("ui_shoot_down"):
+		shootingDirection = Vector2(1,0)
+		_shoot()
+	elif Input.is_action_pressed("ui_page_down") or (Input.is_action_pressed("ui_shoot_right") and Input.is_action_pressed("ui_shoot_down")):
+		shootingDirection = Vector2(1,1)
+		_shoot()
+	elif Input.is_action_pressed("ui_shoot_down") and !Input.is_action_pressed("ui_shoot_right") and !Input.is_action_pressed("ui_shoot_left"):
+		shootingDirection = Vector2(0,1)
+		_shoot()
+	elif Input.is_action_pressed("ui_end") or (Input.is_action_pressed("ui_shoot_down") and Input.is_action_pressed("ui_shoot_left")):
+		shootingDirection = Vector2(-1,1)
+		_shoot()
+	elif Input.is_action_pressed("ui_shoot_left") and !Input.is_action_pressed("ui_shoot_down") and !Input.is_action_pressed("ui_shoot_up"):
+		shootingDirection = Vector2(-1,0)
+		_shoot()
+	elif Input.is_action_pressed("ui_home") or (Input.is_action_pressed("ui_shoot_left") and Input.is_action_pressed("ui_shoot_up")):
+		shootingDirection = Vector2(-1,-1)
 		_shoot()
 
 func _shoot():
@@ -363,7 +434,7 @@ func _on_right_body_exited(body):
 		rightWall -= 1
 
 func _on_left_area_entered(area):
-	if area.is_in_group("ledge") and leftWall > 0:
+	if area.is_in_group("ledge") and leftWall > 0 and !dodgeAnim:
 		if self.position.y - area.position.y >= 6:
 			self.position.y = area.position.y + 16
 			velocity = Vector2(0,0)
@@ -380,7 +451,7 @@ func _on_left_area_exited(area):
 		leftLedge = false
 
 func _on_right_area_entered(area):
-	if area.is_in_group("ledge") and rightWall > 0:
+	if area.is_in_group("ledge") and rightWall > 0 and !dodgeAnim:
 		if self.position.y - area.position.y >= 6:
 			self.position.y = area.position.y + 16
 			velocity = Vector2(0,0)
@@ -430,15 +501,3 @@ func _on_down_body_exited(body):
 		touchFloor -= 1
 		if !jumpInput:    # For coyote jump
 			coyoteTime = 0
-
-# These second ground detectors are for the early jump. If they touch floor from which the player can jump off, it allows
-# the player to press the jump button and initiate a jump the moment they touch the floor, if they are still pressing it.
-# This allows for much easier consecutive jumps.
-
-func _on_down2_body_entered(body):
-	if body.is_in_group("floor"):
-		touchFloor2 += 1
-
-func _on_down2_body_exited(body):
-	if body.is_in_group("floor"):
-		touchFloor2 -= 1
