@@ -15,8 +15,10 @@ export(float) var DODGE_DISTANCE = 128             # Distance in pixels covered 
 export(float) var DODGE_DURATION = 150             # Duration in miliseconds of a dodge.
 export(float) var DODGE_INVINCIBILITY = 120        # Time in miliseconds of invincibility after starting a dodge.
 export(float) var RATE_OF_FIRE = 400               # Cooldown in miliseconds before being able to fire again.
+export(float) var DAMAGE_INVINCIBILITY = 1000      # Invincibility time after taking damage.
 
-var velocity = Vector2()      # Player's velocity vector
+var velocity = Vector2()      # Player's velocity vector.
+var hitPoints = 6             # Player's hit points.
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
 var wallJumpInput = false     # For wall jump, works almost in the same way as jumpInput.
@@ -27,6 +29,8 @@ var rightLedge = false        # True if the character is hanging from a platform
 var leftLedgeAnim = false     # True if the character is jumping from a ledge onto a platform on the left.
 var rightLedgeAnim = false    # True if the character is jumping from a ledge onto a platform on the right.
 var dodgeAnim = false         # True when the player is on a dodge animation.
+var damageAnim = false        # True when the player is on a take damage animation.
+var invincible = false        # True when the player is invincible after taking damage.
 var animTimer = -1            # Timer count for animations.
 var playerFacing = 1          # Equals 1 when facing right and -1 when facing left.
 var dodgeAvailable = true     # True when the player can dodge.
@@ -59,18 +63,23 @@ func _physics_process(delta):
 	
 	_directional_inputs()
 	
-	if !dodgeAnim:
-		if leftLedgeAnim or rightLedgeAnim:
-			if (rightHold  or leftHold) and animTimer > 0.2:
-				leftLedgeAnim = false
-				rightLedgeAnim = false
-				animTimer = -1
-		else:
-			if !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
-				_moving(delta)
-		_jumping(delta)
-		_shooting(delta)
-	_dodging(delta)
+	if damageAnim or invincible:
+		_take_damage_animation(delta)
+		if animTimer >= 0.4 and (leftPressed or rightPressed or upPressed or downPressed or Input.is_action_just_pressed("ui_jump") or Input.is_action_just_pressed("ui_dodge")):
+			damageAnim = false
+	if !damageAnim:
+		if !dodgeAnim:
+			if leftLedgeAnim or rightLedgeAnim:
+				if (rightHold  or leftHold) and animTimer > 0.2:
+					leftLedgeAnim = false
+					rightLedgeAnim = false
+					animTimer = -1
+			else:
+				if !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
+					_moving(delta)
+			_jumping(delta)
+			_shooting(delta)
+		_dodging(delta)
 	
 	velocity = move_and_slide(velocity, Vector2(0,-1))
 
@@ -409,9 +418,33 @@ func _shoot():
 		projectile.position = position
 		projectile.direction = shootingDirection.normalized()
 
-func _take_damage(damage):
-	velocity = Vector2(0,0)
-	position = Vector2(176,192)
+func _take_damage(damage, impact):
+	hitPoints -= damage
+	dodgeAnim = false
+	leftLedgeAnim = false
+	rightLedgeAnim = false
+	damageAnim = true
+	invincible = true
+	animTimer = 0
+	set_collision_layer(2)
+	set_collision_mask(2)
+	if impact > 0:
+		velocity = Vector2(300,-300)
+	else:
+		velocity = Vector2(-300,-300)
+
+func _take_damage_animation(delta):
+	animTimer += delta
+	if animTimer >= 0.1 and (touchFloor > 0 or leftWall > 0 or rightWall > 0) and damageAnim:
+		damageAnim = false
+	if animTimer >= DAMAGE_INVINCIBILITY / 1000:
+		animTimer = -1
+		invincible = false
+		damageAnim = false
+		set_collision_layer(1)
+		set_collision_mask(1)
+	if damageAnim:
+		velocity.y += GRAVITY*delta
 
 # These wall detectors allow for detection of walls and which side of the player they're touching. It also only detects
 # nodes on the 'wall' group. This is better than is_on_wall() because it tells the direction the wall is on and it only
@@ -488,7 +521,7 @@ func _on_right2_body_exited(body):
 	if body.is_in_group("wall"):
 		rightWall2 -= 1
 
-# These detectors are for detecting ground. They are better than is_on_floor() because they only detect nodes on the 'floor'
+# This detector is for detecting ground. It is better than is_on_floor() because they only detect nodes on the 'floor'
 # group, allowing us to control which bodies are jumpable off of, to disallow the player from jumping from spikes,
 # projectiles, enemies and other things we deem important.
 

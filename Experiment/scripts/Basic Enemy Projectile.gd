@@ -12,5 +12,5 @@ func _physics_process(delta):
 
 func _on_Basic_Enemy_Projectile_body_entered(body):
 	if body.is_in_group("player"):
-		body._take_damage(damage)
+		body._take_damage(1, direction.x)
 		self.queue_free()
