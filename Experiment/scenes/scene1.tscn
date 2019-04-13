@@ -2,7 +2,7 @@
 
 [ext_resource path="res://prefabs/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://sprites/SmallBlack.png" type="Texture" id=2]
-[ext_resource path="res://prefabs/Enemy.tscn" type="PackedScene" id=3]
+[ext_resource path="res://prefabs/Enemies/Basic Enemy.tscn" type="PackedScene" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 320, 32 )
@@ -185,7 +185,7 @@ __meta__ = {
 shape = SubResource( 4 )
 
 [node name="Enemy" parent="." instance=ExtResource( 3 )]
-position = Vector2( 675.963, 66.2326 )
+position = Vector2( 633, 177 )
 shootCoolDown = 1.0
-maxHealth = 5.0
+isSenoidalProjectile = true
 

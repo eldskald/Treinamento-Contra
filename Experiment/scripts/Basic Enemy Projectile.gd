@@ -4,13 +4,12 @@ export(float) var SPEED
 export(float) var damage
 
 var direction = Vector2()
-var angle = direction.angle()
 
 func _physics_process(delta):
-	position += SPEED*direction*delta
+	position += SPEED*direction*delta                 #Bullet Trajectory (In this case is linear)
 
 
-func _on_Basic_Enemy_Projectile_body_entered(body):
-	if body.is_in_group("player"):
-		body._take_damage(1, direction.x)
-		self.queue_free()
+func _on_Basic_Enemy_Projectile_body_entered(body):   #If the bullet hit on something...
+	if body.is_in_group("player"):                    #Check if it is in "Player" Group
+		body._take_damage(1, direction.x)             #Do damage on Player
+		self.queue_free()                             #Destroy the bullet on impact
