@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+export(float) var HEARTS = 3                       # Player's total number of hearts. Each heart represents 2 hit points.
 export(float) var MAXIMUM_SPEED = 300              # Player's maximum horizontal move speed in pixels per second.
 export(float) var ACCELERATION = 1400              # Player's horizontal acceleration in pixels per second per second.
 export(float) var GRAVITY = 1800                   # Gravity's acceleration in pixels per second per second.
@@ -17,8 +18,8 @@ export(float) var DODGE_INVINCIBILITY = 120        # Time in miliseconds of invi
 export(float) var RATE_OF_FIRE = 400               # Cooldown in miliseconds before being able to fire again.
 export(float) var DAMAGE_INVINCIBILITY = 1000      # Invincibility time after taking damage.
 
-var velocity = Vector2()      # Player's velocity vector.
-var hitPoints = 6             # Player's hit points.
+var velocity = Vector2()                # Player's velocity vector.
+var hitPoints = 2 * HEARTS              # Player's current hit points. The maximum is twice the HEARTS value.
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
 var wallJumpInput = false     # For wall jump, works almost in the same way as jumpInput.
@@ -34,6 +35,8 @@ var invincible = false        # True when the player is invincible after taking 
 var animTimer = -1            # Timer count for animations.
 var playerFacing = 1          # Equals 1 when facing right and -1 when facing left.
 var dodgeAvailable = true     # True when the player can dodge.
+
+signal displayHitPoints (hearts, currentHp)      # Signal sent to the UI to update the hearts display.
 
 var upPressed = false     # True when the player pressed any up button or tilted the left stick up.
 var leftPressed = false   # True when the player pressed any left button or tilted the left stick left.
@@ -58,6 +61,9 @@ var rightWall2 = 0            # Counts how many bodies the right wall detector 2
 var bullet = preload("res://prefabs/Bullet.tscn")        # Projectile prefab shot by the player.
 var shootingDirection = Vector2(1, 0)                    # The direction the player is shooting.
 var shootingCooldown = 0                                 # Timer to shoot again.
+
+func _ready():
+	emit_signal("displayHitPoints", HEARTS, hitPoints)
 
 func _physics_process(delta):
 	
@@ -420,6 +426,7 @@ func _shoot():
 
 func _take_damage(damage, impact):
 	hitPoints -= damage
+	emit_signal("displayHitPoints", HEARTS, hitPoints)
 	dodgeAnim = false
 	leftLedgeAnim = false
 	rightLedgeAnim = false
