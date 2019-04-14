@@ -34,5 +34,5 @@ func _process(delta):
 
 func _on_Senoidal_Enemy_Projectile_body_entered(body):
 	if body.is_in_group("player"):                    
-		body._take_damage(1, playerDirection.x)             
+		body._take_damage(damage, playerDirection.x)             
 		self.queue_free()  

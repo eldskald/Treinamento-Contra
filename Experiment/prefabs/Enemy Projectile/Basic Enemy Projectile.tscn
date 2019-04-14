@@ -14,9 +14,10 @@ __meta__ = {
 "_edit_group_": true
 }
 SPEED = 200.0
+damage = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -8.32975e-06, -9.53674e-07 )
+position = Vector2( -8.32975e-006, -9.53674e-007 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

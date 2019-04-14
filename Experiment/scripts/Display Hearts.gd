@@ -5,7 +5,7 @@ var halfHeart = preload("res://prefabs/UI Elements/Half Heart.tscn")
 var emptyHeart = preload("res://prefabs/UI Elements/Empty Heart.tscn")
 var heart
 
-func _on_update_HitPoints (hearts, currentHitPoints):
+func _on_update_hearts (hearts, currentHitPoints):
 	for heart in $Hearts.get_children():
 		heart.queue_free()
 	for i in range(hearts):

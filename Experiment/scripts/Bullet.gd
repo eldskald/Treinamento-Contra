@@ -7,8 +7,6 @@ export(float) var DAMAGE
 var direction = Vector2()
 var timer = 0
 
-signal kill
-
 func _physics_process(delta):
 	position += SPEED*direction*delta
 	timer += delta
