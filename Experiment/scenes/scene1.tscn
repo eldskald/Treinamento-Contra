@@ -193,7 +193,5 @@ isSenoidalProjectile = true
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="UI" parent="CanvasLayer" instance=ExtResource( 4 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
 
 [connection signal="displayHitPoints" from="Player" to="CanvasLayer/UI" method="_on_update_hearts"]

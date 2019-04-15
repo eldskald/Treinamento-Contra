@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 export(float) var HEARTS = 3                       # Player's total number of hearts. Each heart represents 2 hit points.
+export(float) var HEAL_PACKS = 3                   # Player's heal packs maximum.
 export(float) var MAXIMUM_SPEED = 300              # Player's maximum horizontal move speed in pixels per second.
 export(float) var ACCELERATION = 1400              # Player's horizontal acceleration in pixels per second per second.
 export(float) var GRAVITY = 1800                   # Gravity's acceleration in pixels per second per second.
@@ -15,11 +16,13 @@ export(float) var COYOTE_JUMP = 80                 # Pity timer of a coyote jump
 export(float) var DODGE_DISTANCE = 128             # Distance in pixels covered by a dodge.
 export(float) var DODGE_DURATION = 150             # Duration in miliseconds of a dodge.
 export(float) var DODGE_INVINCIBILITY = 120        # Time in miliseconds of invincibility after starting a dodge.
+export(float) var HEALING_TIME = 1000              # Time in miliseconds the player must hold the heal button to heal.
 export(float) var RATE_OF_FIRE = 400               # Cooldown in miliseconds before being able to fire again.
 export(float) var DAMAGE_INVINCIBILITY = 1000      # Invincibility time after taking damage.
 
 var velocity = Vector2()                # Player's velocity vector.
 var hitPoints = 2 * HEARTS              # Player's current hit points. The maximum is twice the HEARTS value.
+var healPacks = HEAL_PACKS              # Player's current heal packs total.
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
 var wallJumpInput = false     # For wall jump, works almost in the same way as jumpInput.
@@ -35,6 +38,7 @@ var invincible = false        # True when the player is invincible after taking 
 var animTimer = -1            # Timer count for animations.
 var playerFacing = 1          # Equals 1 when facing right and -1 when facing left.
 var dodgeAvailable = true     # True when the player can dodge.
+var isHealing = false         # True when the player is healing.
 
 signal displayHitPoints (hearts, currentHp)      # Signal sent to the UI to update the hearts display.
 
@@ -63,17 +67,18 @@ var shootingDirection = Vector2(1, 0)                    # The direction the pla
 var shootingCooldown = 0                                 # Timer to shoot again.
 
 func _ready():
-	emit_signal("displayHitPoints", HEARTS, hitPoints)
+	emit_signal("displayHitPoints", HEARTS, hitPoints, HEAL_PACKS, healPacks)
 
 func _physics_process(delta):
 	
 	_directional_inputs()
 	
+	_heal(delta)
 	if damageAnim or invincible:
 		_take_damage_animation(delta)
 		if animTimer >= 0.4 and (leftPressed or rightPressed or upPressed or downPressed or Input.is_action_just_pressed("ui_jump") or Input.is_action_just_pressed("ui_dodge")):
 			damageAnim = false
-	if !damageAnim:
+	if !damageAnim and !isHealing:
 		if !dodgeAnim:
 			if leftLedgeAnim or rightLedgeAnim:
 				if (rightHold  or leftHold) and animTimer > 0.2:
@@ -424,9 +429,32 @@ func _shoot():
 		projectile.position = position
 		projectile.direction = shootingDirection.normalized()
 
+# This function handles healing. It is designed to work when the player is standing still on the floor, holding the
+# heal button for HEALING_TIME miliseconds. During this time, they can't move or shoot. If they take damage, they get
+# interrupted and the process stops. They only spend the healing pack and get their hit points back after finishing
+# this process uninterrupted.
+
+func _heal(delta):
+	if Input.is_action_just_pressed("ui_heal") and !damageAnim and !dodgeAnim and !leftLedgeAnim and !rightLedgeAnim and touchFloor > 0:
+		if hitPoints < 2*HEARTS and healPacks > 0:
+			isHealing = true
+			animTimer = 0
+	if Input.is_action_pressed("ui_heal") and isHealing and touchFloor > 0:
+		animTimer += delta
+		if animTimer >= HEALING_TIME / 1000:
+			hitPoints = 2 * HEARTS
+			healPacks -= 1
+			emit_signal("displayHitPoints", HEARTS, hitPoints, HEAL_PACKS, healPacks)
+			isHealing = false
+			animTimer = -1
+	elif (Input.is_action_just_released("ui_heal") or touchFloor == 0) and isHealing:
+		isHealing = false
+		animTimer = -1
+
 func _take_damage(damage, impact):
 	hitPoints -= damage
-	emit_signal("displayHitPoints", HEARTS, hitPoints)
+	emit_signal("displayHitPoints", HEARTS, hitPoints, HEAL_PACKS, healPacks)
+	isHealing = false
 	dodgeAnim = false
 	leftLedgeAnim = false
 	rightLedgeAnim = false
