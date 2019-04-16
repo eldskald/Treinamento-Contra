@@ -1,0 +1,199 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://prefabs/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://sprites/SmallBlack.png" type="Texture" id=2]
+[ext_resource path="res://prefabs/UI.tscn" type="PackedScene" id=3]
+[ext_resource path="res://prefabs/Enemies/Flying Enemy.tscn" type="PackedScene" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 320, 32 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 32, 288 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 0.199997, 1 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 1, 1 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 176, 176 )
+
+[node name="Blocks" type="Node" parent="."]
+
+[node name="Block1" type="Sprite" parent="Blocks"]
+editor/display_folded = true
+position = Vector2( 224, 384 )
+scale = Vector2( 5, 1 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Hitbox" type="StaticBody2D" parent="Blocks/Block1" groups=[
+"floor",
+"wall",
+"block",
+]]
+editor/display_folded = true
+position = Vector2( -8.2963, 0 )
+scale = Vector2( 0.0740741, 1 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block1/Hitbox"]
+position = Vector2( 112, 0 )
+scale = Vector2( 1.35, 1 )
+shape = SubResource( 1 )
+
+[node name="Block2" type="Sprite" parent="Blocks"]
+editor/display_folded = true
+position = Vector2( 40, 132 )
+scale = Vector2( 1, 6.5 )
+texture = ExtResource( 2 )
+offset = Vector2( -8, 11.6923 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Hitbox" type="StaticBody2D" parent="Blocks/Block2" groups=[
+"floor",
+"wall",
+"block",
+]]
+editor/display_folded = true
+position = Vector2( 0, 12.3077 )
+scale = Vector2( 1, 0.153846 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block2/Hitbox"]
+position = Vector2( -8, -4.00005 )
+scale = Vector2( 1, 0.722222 )
+shape = SubResource( 2 )
+
+[node name="Block3" type="Sprite" parent="Blocks"]
+editor/display_folded = true
+position = Vector2( 656, 464 )
+scale = Vector2( 4.5, 5.5 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Hitbox" type="StaticBody2D" parent="Blocks/Block3" groups=[
+"floor",
+"wall",
+"block",
+]]
+editor/display_folded = true
+position = Vector2( -8.2963, 0 )
+scale = Vector2( 0.0740741, 1 )
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block3/Hitbox"]
+position = Vector2( 112, 0 )
+scale = Vector2( 1.35, 1 )
+shape = SubResource( 1 )
+
+[node name="Ledge 1" type="Area2D" parent="Blocks" groups=[
+"ledge",
+]]
+editor/display_folded = true
+position = Vector2( 383, 353 )
+scale = Vector2( 5, 1 )
+input_pickable = false
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Ledge 1"]
+shape = SubResource( 3 )
+
+[node name="Ledge 2" type="Area2D" parent="Blocks" groups=[
+"ledge",
+]]
+editor/display_folded = true
+position = Vector2( 513, 289 )
+scale = Vector2( 5, 1 )
+input_pickable = false
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Ledge 2"]
+shape = SubResource( 3 )
+
+[node name="Ledge 3" type="Area2D" parent="Blocks" groups=[
+"ledge",
+]]
+editor/display_folded = true
+position = Vector2( 799, 289 )
+scale = Vector2( 5, 1 )
+input_pickable = false
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Ledge 3"]
+shape = SubResource( 3 )
+
+[node name="Ledge 4" type="Area2D" parent="Blocks" groups=[
+"ledge",
+]]
+editor/display_folded = true
+position = Vector2( 63, 1 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Ledge 4"]
+shape = SubResource( 4 )
+
+[node name="Ledge 5" type="Area2D" parent="Blocks" groups=[
+"ledge",
+]]
+editor/display_folded = true
+position = Vector2( 1, 1 )
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Ledge 5"]
+shape = SubResource( 4 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" parent="CanvasLayer" instance=ExtResource( 3 )]
+
+[node name="Flying Enemy" parent="." instance=ExtResource( 4 )]
+position = Vector2( 711.756, 32.682 )
+scale = Vector2( 0.5, 0.5 )
+SPEED = 100.0
+GRAVITY = 100.0
+PERIOD = 0.5
+
+[connection signal="displayHitPoints" from="Player" to="CanvasLayer/UI" method="_on_update_hearts"]
