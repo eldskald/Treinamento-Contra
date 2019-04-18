@@ -71,7 +71,7 @@ func _ready():
 
 func _physics_process(delta):
 	
-	_directional_inputs()
+	_special_inputs()
 	
 	_heal(delta)
 	if damageAnim or invincible:
@@ -94,10 +94,10 @@ func _physics_process(delta):
 	
 	velocity = move_and_slide(velocity, Vector2(0,-1))
 
-# This function handles the directional inputs. We need them because either the buttons or the left analog stick
-# should yield this, which means there should be lots of things to read instead of just the action.
+# This function handles the directional inputs and double clicks. We need them because either the buttons or the
+# left analog stick should yield this, which means there should be lots of things to read instead of just the action.
 
-func _directional_inputs():
+func _special_inputs():
 	var buttonUpPressed = Input.is_action_just_pressed("ui_up")
 	var buttonLeftPressed = Input.is_action_just_pressed("ui_left")
 	var buttonDownPressed = Input.is_action_just_pressed("ui_down")
@@ -169,6 +169,8 @@ func _directional_inputs():
 	leftReleased = leftReleased or buttonLeftReleased
 	downReleased = downReleased or buttonDownReleased
 	rightReleased = rightReleased or buttonRightReleased
+	
+	# Now, for double clicks.
 
 # This function handles horizontal movement. It is written to accelerate the player character until it reaches
 # MAXIMUM_SPEED as long as the player is pressing the directional input. If the player releases it, the character
@@ -352,6 +354,9 @@ func _dodging(delta):
 	if Input.is_action_just_pressed("ui_dodge") and !dodgeAnim and dodgeAvailable:
 		dodgeAnim = true
 		dodgeAvailable = false
+		jumpInput = false
+		wallJumpInput = false
+		earlyTime = -1
 		leftLedgeAnim = false
 		rightLedgeAnim = false
 		animTimer = 0
@@ -390,7 +395,7 @@ func _shooting(delta):
 		shootingDirection = stick
 		_shoot()
 	
-	if Input.is_action_pressed("ui_mouse_left_click"):
+	if Input.is_action_pressed("ui_mouse_right_click"):
 		shootingDirection = get_viewport().get_mouse_position()
 		shootingDirection = Vector2(shootingDirection.x - self.get_global_transform_with_canvas().origin.x, shootingDirection.y - self.get_global_transform_with_canvas().origin.y)
 		_shoot()
