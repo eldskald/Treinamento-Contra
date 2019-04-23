@@ -26,6 +26,7 @@ var healPacks = HEAL_PACKS              # Player's current heal packs total.
 
 var jumpInput = false         # True when player is pressing the jump button before it reaches the jump's maximum height.
 var wallJumpInput = false     # For wall jump, works almost in the same way as jumpInput.
+var fastFalling = false       # True when the player is fast falling.
 var earlyTime = -1            # Early jump pity timer countdown.
 var coyoteTime = -1           # Coyote jump pity timer countdown.
 var leftLedge = false         # True if the character is hanging from a platform ledge on his left.
@@ -71,7 +72,7 @@ func _ready():
 
 func _physics_process(delta):
 	
-	_special_inputs()
+	_directional_inputs()
 	
 	_heal(delta)
 	if damageAnim or invincible:
@@ -97,7 +98,7 @@ func _physics_process(delta):
 # This function handles the directional inputs and double clicks. We need them because either the buttons or the
 # left analog stick should yield this, which means there should be lots of things to read instead of just the action.
 
-func _special_inputs():
+func _directional_inputs():
 	var buttonUpPressed = Input.is_action_just_pressed("ui_up")
 	var buttonLeftPressed = Input.is_action_just_pressed("ui_left")
 	var buttonDownPressed = Input.is_action_just_pressed("ui_down")
@@ -169,8 +170,6 @@ func _special_inputs():
 	leftReleased = leftReleased or buttonLeftReleased
 	downReleased = downReleased or buttonDownReleased
 	rightReleased = rightReleased or buttonRightReleased
-	
-	# Now, for double clicks.
 
 # This function handles horizontal movement. It is written to accelerate the player character until it reaches
 # MAXIMUM_SPEED as long as the player is pressing the directional input. If the player releases it, the character
@@ -228,7 +227,7 @@ func _jumping(delta):
 		earlyTime += delta
 		if earlyTime > EARLY_JUMP / 1000:
 			earlyTime = -1
-	elif touchFloor > 0 and earlyTime >= 0 and Input.is_action_pressed("ui_jump"):
+	elif touchFloor > 0 and earlyTime >= 0 and Input.is_action_pressed("ui_jump") and !fastFalling:
 		earlyTime = -1
 		jumpInput = true
 		velocity.y = -JUMP_SPEED
@@ -325,21 +324,21 @@ func _jumping(delta):
 			playerFacing = 1
 		elif rightWall > 0 and playerFacing != -1:
 			playerFacing = -1
-	elif Input.is_action_pressed("ui_jump") and earlyTime == -1 and !downHold and leftWall == 0 and rightWall == 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
+	elif Input.is_action_pressed("ui_jump") and earlyTime == -1 and !fastFalling and leftWall == 0 and rightWall == 0 and !(leftLedge or rightLedge or leftLedgeAnim or rightLedgeAnim):
 		if velocity.y < GLIDING_FALL_SPEED and velocity.y + GRAVITY*delta < GLIDING_FALL_SPEED:
 			velocity.y += GRAVITY*delta
 		elif velocity.y >= GLIDING_FALL_SPEED:
 			velocity.y = GLIDING_FALL_SPEED
 	else:
-		var fallSpeed
-		if downHold and !upHold and velocity.y >= 0 and leftWall == 0 and rightWall == 0:
-			fallSpeed = FAST_FALL_MULTIPLIER
-		else:
-			fallSpeed = 1
-		if velocity.y < MAX_FALLING_SPEED*fallSpeed and velocity.y + GRAVITY*fallSpeed*delta < MAX_FALLING_SPEED*fallSpeed:
-			velocity.y += GRAVITY*fallSpeed*delta
-		elif velocity.y < MAX_FALLING_SPEED*fallSpeed and velocity.y + GRAVITY*fallSpeed*delta >= MAX_FALLING_SPEED*fallSpeed:
-			velocity.y = MAX_FALLING_SPEED*fallSpeed
+		if downHold and !upHold and leftWall == 0 and rightWall == 0 and Input.is_action_just_pressed("ui_jump") and touchFloor == 0:
+			fastFalling = true
+			velocity.y = MAX_FALLING_SPEED*FAST_FALL_MULTIPLIER
+		if fastFalling and touchFloor > 0:
+			fastFalling = false
+		if velocity.y < MAX_FALLING_SPEED and velocity.y + GRAVITY*delta < MAX_FALLING_SPEED:
+			velocity.y += GRAVITY*delta
+		elif velocity.y < MAX_FALLING_SPEED and velocity.y + GRAVITY*delta >= MAX_FALLING_SPEED:
+			velocity.y = MAX_FALLING_SPEED
 
 # This function handles dodging. Dodges are not only a way of traversal as a way to defend against projectiles and
 # enemies. It is designed to work as a quick dash in the direction the player is pressing on the move inputs, covering
@@ -361,14 +360,19 @@ func _dodging(delta):
 		rightLedgeAnim = false
 		animTimer = 0
 		var direction = Vector2(playerFacing, 0)
-		if upHold:
-			direction = Vector2(0,-1)
-		if downHold:
-			direction = Vector2(0,1)
-		if leftHold and !(leftWall > 0 and touchFloor == 0):
-			direction.x = -1
-		if rightHold and !(rightWall > 0 and touchFloor == 0):
-			direction.x = 1
+		if leftWall > 0 and touchFloor == 0:
+			direction = Vector2(1,0)
+		elif rightWall > 0 and touchFloor == 0:
+			direction = Vector2(-1,0)
+		else:
+			if upHold:
+				direction = Vector2(0,-1)
+			if downHold:
+				direction = Vector2(0,1)
+			if leftHold and !(leftWall > 0 and touchFloor == 0):
+				direction.x = -1
+			if rightHold and !(rightWall > 0 and touchFloor == 0):
+				direction.x = 1
 		velocity = direction * DODGE_DISTANCE/(DODGE_DURATION/1000)
 		set_collision_layer(2)
 		set_collision_mask(2)
