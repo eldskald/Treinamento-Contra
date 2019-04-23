@@ -35,8 +35,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block1" groups=[
 "floor",
-"wall",
 "block",
+"wall",
 ]]
 editor/display_folded = true
 position = Vector2( -8.2963, 0 )
@@ -61,8 +61,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block2" groups=[
 "floor",
-"wall",
 "block",
+"wall",
 ]]
 editor/display_folded = true
 position = Vector2( 0, 12.3077 )
@@ -86,8 +86,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block3" groups=[
 "floor",
-"wall",
 "block",
+"wall",
 ]]
 editor/display_folded = true
 position = Vector2( -8.2963, 0 )
@@ -190,10 +190,10 @@ shape = SubResource( 4 )
 [node name="UI" parent="CanvasLayer" instance=ExtResource( 3 )]
 
 [node name="Flying Enemy" parent="." instance=ExtResource( 4 )]
-position = Vector2( 711.756, 32.682 )
+position = Vector2( 631.978, 77.0033 )
 scale = Vector2( 0.5, 0.5 )
-SPEED = 100.0
-GRAVITY = 100.0
+SPEED = 200.0
+GRAVITY = 150.0
 PERIOD = 0.5
 
 [connection signal="displayHitPoints" from="Player" to="CanvasLayer/UI" method="_on_update_hearts"]

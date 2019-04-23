@@ -15,7 +15,7 @@ var internalTimer = 0
 var velocity = Vector2()
 var playerDirection = Vector2()
 var bullet = preload("res://prefabs/Enemy Projectile/Basic Enemy Projectile.tscn")
-var parabolicalBullet = preload("res://prefabs/Enemy Projectile/Senoidal Enemy Projectile.tscn")
+var senoidalBullet = preload("res://prefabs/Enemy Projectile/Senoidal Enemy Projectile.tscn")
 export(bool) var isSenoidalProjectile = false
 var isBasicProjectile
 var shotsPerBurst
@@ -80,14 +80,14 @@ func shoot():
 func senoidalShoot():
 	var playerPosition = get_parent().get_node_or_null("Player").position
 	
-	var projectile = parabolicalBullet.instance()
+	var projectile = senoidalBullet.instance()
 	
 	projectile.playerPosition = playerPosition
 	projectile.position = position + playerDirection*bulletSpawnRadius
 	
 	get_parent().add_child(projectile) 
 	
-	var projectile2 = parabolicalBullet.instance()
+	var projectile2 = senoidalBullet.instance()
 	
 	projectile2.playerPosition = playerPosition
 	projectile2.position = position + playerDirection*bulletSpawnRadius

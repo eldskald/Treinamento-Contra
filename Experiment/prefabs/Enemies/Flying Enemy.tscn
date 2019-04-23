@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/Flying Enemy.gd" type="Script" id=1]
 [ext_resource path="res://sprites/BlackTriangle.png" type="Texture" id=2]
@@ -7,14 +7,21 @@
 
 [sub_resource type="ConvexPolygonShape2D" id=2]
 
+[sub_resource type="ConvexPolygonShape2D" id=3]
+
 [node name="Flying Enemy" type="KinematicBody2D" groups=[
 "Enemy",
 ]]
 position = Vector2( 499, 349 )
 script = ExtResource( 1 )
-SPEED = 250.0
+__meta__ = {
+"_edit_group_": true
+}
+SPEED = 350.0
 GRAVITY = 200.0
 PERIOD = 1.0
+bombPosition = Vector2( 0, 45 )
+bombTimer = 1.5
 
 [node name="Sprite" type="Sprite" parent="."]
 modulate = Color( 1, 0, 0, 1 )
@@ -34,4 +41,12 @@ position = Vector2( -0.12854, 9.89545 )
 scale = Vector2( 4.18856, 4.68002 )
 shape = SubResource( 2 )
 
+[node name="Player Trigger" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player Trigger"]
+position = Vector2( 0, 366.382 )
+scale = Vector2( 70, 33.764 )
+shape = SubResource( 3 )
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Player Trigger" to="." method="_on_Player_Trigger_body_entered"]
