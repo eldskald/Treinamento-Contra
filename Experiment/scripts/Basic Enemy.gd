@@ -1,18 +1,24 @@
 extends KinematicBody2D
 
-export(float) var gravityAccel
-export(float) var shootCoolDown
 export(float) var maxHealth
-export(float) var bulletSpawnRadius
+
+export(float) var gravityAccel
 export(float) var SPEED
-export(Vector2) var burstRange
-export(float) var timeBetweenBurstShots
 export(bool) var jumpLedges
 export(float) var jumpForce
 
+export(Vector2) var burstRange
+export(float) var timeBetweenBurstShots
+
+export(float) var shootCoolDown
+export(float) var bulletSpawnRadius
+
 var health = 0
 var internalTimer = 0
+
 var velocity = Vector2()
+var walkDirection = 1
+
 var playerDirection = Vector2()
 var bullet = preload("res://prefabs/Enemy Projectile/Basic Enemy Projectile.tscn")
 var senoidalBullet = preload("res://prefabs/Enemy Projectile/Senoidal Enemy Projectile.tscn")
@@ -20,6 +26,7 @@ export(bool) var isSenoidalProjectile = false
 var isBasicProjectile
 var shotsPerBurst
 var burstTime
+var isBursting = false
 var playerInRange
 
 # Called when the node enters the scene tree for the first time.
@@ -36,18 +43,30 @@ func _process(delta):
 	velocity.y += gravityAccel*delta
 	
 	### Shooting ###
-	if internalTimer <= 0 and playerInRange:
+	if (internalTimer <= 0 and playerInRange) or isBursting:
 		
-		shotsPerBurst = randi() % int(burstRange.y) + int(burstRange.x)
+		if !isBursting:
+			shotsPerBurst = randi() % int(burstRange.y - burstRange.x + 1) + int(burstRange.x)
+			isBursting = true
+			burstTime = timeBetweenBurstShots
 		
-		if isBasicProjectile:
-			print("entrou")
-			shoot()
+		if shotsPerBurst > 0 and burstTime >= timeBetweenBurstShots:
+			
+			print (shotsPerBurst)
+			if isBasicProjectile:
+				shoot()
+			else:
+				senoidalShoot()
+			
+			burstTime = 0
+			shotsPerBurst -= 1
+		
+		elif burstTime < timeBetweenBurstShots:
+			burstTime += delta
+		
 		else:
-			senoidalShoot()
-			
-			
-		internalTimer = shootCoolDown
+			isBursting = false
+			internalTimer = shootCoolDown
 	
 	elif internalTimer > 0:
 		internalTimer -= delta
@@ -55,6 +74,13 @@ func _process(delta):
 	
 	if health <= 0:
 		kill()
+	
+	
+	if playerInRange:
+		velocity.x = 0
+	
+	else:
+		velocity.x = SPEED*walkDirection
 	
 	velocity = move_and_slide(velocity)
 #	pass
@@ -98,7 +124,7 @@ func senoidalShoot():
 
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("ledge"):
-		velocity.x *= -1
+		walkDirection *= -1
 
 
 
