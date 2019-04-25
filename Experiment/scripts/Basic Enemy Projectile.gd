@@ -13,3 +13,7 @@ func _on_Basic_Enemy_Projectile_body_entered(body):   #If the bullet hit on some
 	if body.is_in_group("player"):                    #Check if it is in "Player" Group
 		body._take_damage(damage, direction.x)        #Do damage on Player
 		self.queue_free()                             #Destroy the bullet on impact
+
+
+func _on_VisibilityEnabler2D_screen_exited():
+	self.queue_free()

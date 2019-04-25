@@ -18,6 +18,7 @@ gravityAccel = 1800.0
 maxHealth = 1.0
 burstRange = Vector2( 2, 4 )
 jumpLedges = true
+isSenoidalProjectile = true
 
 [node name="Sprite" type="Sprite" parent="."]
 modulate = Color( 1, 0, 0, 1 )

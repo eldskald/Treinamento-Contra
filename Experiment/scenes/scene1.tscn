@@ -35,8 +35,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block1" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 editor/display_folded = true
 position = Vector2( -8.2963, 0 )
@@ -61,8 +61,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block2" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 editor/display_folded = true
 position = Vector2( 0, 12.3077 )
@@ -86,8 +86,8 @@ __meta__ = {
 
 [node name="Hitbox" type="StaticBody2D" parent="Blocks/Block3" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 editor/display_folded = true
 position = Vector2( -8.2963, 0 )
@@ -196,6 +196,5 @@ SPEED = 100.0
 timeBetweenBurstShots = 0.1
 jumpLedges = false
 jumpForce = 1300.0
-isSenoidalProjectile = true
 
 [connection signal="displayHitPoints" from="Player" to="CanvasLayer/UI" method="_on_update_hearts"]

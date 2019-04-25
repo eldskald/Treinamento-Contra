@@ -20,7 +20,7 @@ sinPhase = 5.0
 damage = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -8.32975e-006, -9.53674e-007 )
+position = Vector2( -8.32975e-06, -9.53674e-07 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -29,4 +29,7 @@ rotation = 1.5708
 scale = Vector2( 0.3, 0.5 )
 shape = SubResource( 1 )
 
+[node name="VisibilityEnabler2D" type="VisibilityEnabler2D" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_Senoidal_Enemy_Projectile_body_entered"]
+[connection signal="screen_exited" from="VisibilityEnabler2D" to="." method="_on_VisibilityEnabler2D_screen_exited"]

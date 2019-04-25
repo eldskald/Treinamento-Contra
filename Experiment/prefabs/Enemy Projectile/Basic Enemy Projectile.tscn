@@ -26,4 +26,7 @@ rotation = 1.5708
 scale = Vector2( 0.3, 0.5 )
 shape = SubResource( 1 )
 
+[node name="VisibilityEnabler2D" type="VisibilityEnabler2D" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_Basic_Enemy_Projectile_body_entered"]
+[connection signal="screen_exited" from="VisibilityEnabler2D" to="." method="_on_VisibilityEnabler2D_screen_exited"]
