@@ -191,10 +191,12 @@ shape = SubResource( 4 )
 
 [node name="Basic Enemy" parent="." instance=ExtResource( 4 )]
 position = Vector2( 662.651, 241.749 )
-shootCoolDown = 1.0
 SPEED = 100.0
-timeBetweenBurstShots = 0.1
 jumpLedges = false
 jumpForce = 1300.0
+burstRange = Vector2( 2, 4 )
+timeBetweenBurstShots = 0.1
+shootCoolDown = 1.0
+isSenoidalProjectile = false
 
 [connection signal="displayHitPoints" from="Player" to="CanvasLayer/UI" method="_on_update_hearts"]

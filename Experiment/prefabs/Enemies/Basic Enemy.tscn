@@ -14,10 +14,11 @@ extents = Vector2( 11.2713, 10 )
 "Enemy",
 ]]
 script = ExtResource( 1 )
-gravityAccel = 1800.0
 maxHealth = 1.0
-burstRange = Vector2( 2, 4 )
+gravityAccel = 1800.0
 jumpLedges = true
+burstRange = Vector2( 1, 2 )
+timeBetweenBurstShots = 1.0
 isSenoidalProjectile = true
 
 [node name="Sprite" type="Sprite" parent="."]

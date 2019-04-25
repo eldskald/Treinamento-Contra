@@ -13,10 +13,6 @@ func _physics_process(delta):
 			gamePaused = true
 			child = preload("res://prefabs/Pause Menu.tscn").instance()
 			add_child(child)
-	elif gamePaused == true:
-		if Input.is_action_just_pressed("ui_start") or Input.is_action_just_pressed("ui_select") or Input.is_action_just_pressed("ui_cancel"):
-			get_tree().set_pause(false)
-			gamePaused = false
 
 # This function is called from the player as a signal to update the display of hearts and health packs.
 
