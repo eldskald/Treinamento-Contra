@@ -13,3 +13,6 @@ func _on_resume_pressed():
 	get_tree().set_pause(false)
 	get_parent().gamePaused = false
 	self.queue_free()
+
+func _on_quit_pressed():
+	get_tree().quit()

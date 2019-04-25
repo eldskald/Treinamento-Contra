@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/Pause Menu.gd" type="Script" id=1]
 [ext_resource path="res://fonts/CuteFont-Regular.ttf" type="DynamicFontData" id=2]
@@ -8,6 +8,10 @@ size = 64
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=2]
+size = 42
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=3]
 size = 42
 font_data = ExtResource( 2 )
 
@@ -50,11 +54,26 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -53.0
-margin_top = -24.5
+margin_top = -60.0
 margin_right = 53.0
-margin_bottom = 24.5
+margin_bottom = -11.0
 custom_fonts/font = SubResource( 2 )
 text = "Resume"
 flat = true
 
+[node name="Button" type="Button" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -31.5
+margin_top = -10.0
+margin_right = 31.5
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 3 )
+shortcut_in_tooltip = false
+text = "Quit"
+flat = true
+
 [connection signal="pressed" from="Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Button" to="." method="_on_quit_pressed"]
