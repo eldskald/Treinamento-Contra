@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://sprites/controls2.png" type="Texture" id=1]
+
+[node name="ControlsTooltip2" type="TextureRect"]
+margin_left = 691.0
+margin_top = 138.0
+margin_right = 1013.0
+margin_bottom = 460.0
+texture = ExtResource( 1 )
+
