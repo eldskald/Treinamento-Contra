@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://KinematicBody2D.gd" type="Script" id=1]
+[ext_resource path="res://prefabs/Bullet.tscn" type="PackedScene" id=2]
+
+[node name="BaseCreature" type="KinematicBody2D"]
+script = ExtResource( 1 )
+bullet = ExtResource( 2 )
+
+[node name="Sentinels" type="Node" parent="."]
+
+[node name="WallDetectors" type="Area2D" parent="Sentinels"]
+
+[node name="GroundSentinel" type="Area2D" parent="Sentinels"]
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[connection signal="area_entered" from="Sentinels/WallDetectors" to="." method="_on_WallDetectors_area_entered"]
+[connection signal="area_entered" from="Sentinels/GroundSentinel" to="." method="_on_GroundSentinel_area_entered"]
