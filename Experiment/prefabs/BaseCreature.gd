@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name BaseCreature
 
+const MAX_SPEED = 3000
+
 ######COMBAT VARIABLES###########
 export(int) var max_health
 export(int) var damage
@@ -26,6 +28,18 @@ onready var shoot_cooldown: float = 1.0/fire_rate
 var natural_velocity := Vector2()
 var forced_velocity := Vector2()
 var remaining_velocity := Vector2()
+var velocity := Vector2()
+
+func _physics_process(delta):
+	gravity_application(delta)
+	get_direction_input(direction)
+	accelerate(delta)
+	
+	velocity = natural_velocity + forced_velocity
+	if velocity.length() > MAX_SPEED:
+		velocity *= MAX_SPEED / velocity.length()
+	
+	move_and_slide(velocity, Vector2(0,-1))
 
 func is_dead() -> bool:
 	return health <= 0
@@ -37,15 +51,14 @@ func take_damage(damage_amount: int, source_direction: Vector2) -> void:
 func get_direction_input(directional_input: Vector2) -> void:
 	direction = directional_input.normalized()
 
-func acccelerate(delta) -> void:
+func accelerate(delta) -> void:
 	natural_velocity = direction*delta*acceleration
 	if natural_velocity.length() > absolute_max_speed:
 		natural_velocity *= absolute_max_speed/natural_velocity.length()
 
-func movement(delta):
-	acccelerate(delta)
-	remaining_velocity = move_and_slide(natural_velocity + forced_velocity)
-	pass
+func gravity_application(delta):
+	forced_velocity.y += gravity*delta
+	forced_velocity.y = clamp(forced_velocity.y, -max_falling_speed, MAX_SPEED)
 
 func get_detectors():
 	down_detector_list = $Detectors/Down.get_overlapping_bodies()
