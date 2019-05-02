@@ -10,7 +10,7 @@ export(PackedScene) var bullet
 ########PHYSICS VARIABLES###########
 export(float) var gravity
 export(float) var acceleration
-export(float) var max_speed
+export(float) var absolute_max_speed
 export(float) var max_falling_speed
 
 var down_detector_list
@@ -36,6 +36,8 @@ func get_direction_input(directional_input: Vector2) -> void:
 
 func acccelerate(delta) -> void:
 	natural_velocity = direction*delta*acceleration
+	if natural_velocity.length() > absolute_max_speed:
+		natural_velocity *= absolute_max_speed/natural_velocity.length()
 
 func movement(delta):
 	acccelerate(delta)

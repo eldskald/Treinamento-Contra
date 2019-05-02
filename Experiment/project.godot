@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "BaseCreature",
 "language": "GDScript",
 "path": "res://prefabs/BaseCreature.gd"
+}, {
+"base": "BaseCreature",
+"class": "BaseEnemy",
+"language": "GDScript",
+"path": "res://prefabs/Enemies/Base Enemy/BaseEnemy.gd"
 } ]
 _global_script_class_icons={
-"BaseCreature": ""
+"BaseCreature": "",
+"BaseEnemy": ""
 }
 
 [application]
