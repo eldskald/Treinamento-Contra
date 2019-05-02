@@ -3,8 +3,6 @@
 [ext_resource path="res://prefabs/BaseCreature.gd" type="Script" id=1]
 [ext_resource path="res://prefabs/Bullet.tscn" type="PackedScene" id=2]
 
-
-
 [node name="BaseCreature" type="KinematicBody2D"]
 script = ExtResource( 1 )
 bullet = ExtResource( 2 )
@@ -16,3 +14,5 @@ bullet = ExtResource( 2 )
 [node name="Left" type="Area2D" parent="Detectors"]
 
 [node name="Right" type="Area2D" parent="Detectors"]
+
+[node name="Sprite" type="Sprite" parent="."]

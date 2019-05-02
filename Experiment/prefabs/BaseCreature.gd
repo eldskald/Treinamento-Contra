@@ -4,7 +4,8 @@ class_name BaseCreature
 ######COMBAT VARIABLES###########
 export(int) var max_health
 export(int) var damage
-export(float) var shoot_cooldown
+export(float) var fire_rate
+export(float) var shoot_distance_from_origin
 export(PackedScene) var bullet
 
 ########PHYSICS VARIABLES###########
@@ -12,6 +13,7 @@ export(float) var gravity
 export(float) var acceleration
 export(float) var absolute_max_speed
 export(float) var max_falling_speed
+export(float) var jump_force
 
 var down_detector_list
 var left_detector_list
@@ -19,6 +21,7 @@ var right_detector_list
 
 onready var health: int = max_health
 onready var direction := Vector2()
+onready var shoot_cooldown: float = 1.0/fire_rate
 
 var natural_velocity := Vector2()
 var forced_velocity := Vector2()
