@@ -9,13 +9,13 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "BaseCreature",
-"class": "BaseEnemy",
+"base": "KinematicBody2D",
+"class": "BaseCreature",
 "language": "GDScript",
-"path": "res://BaseCreature.gd"
+"path": "res://prefabs/BaseCreature.gd"
 } ]
 _global_script_class_icons={
-"BaseEnemy": ""
+"BaseCreature": ""
 }
 
 [application]
