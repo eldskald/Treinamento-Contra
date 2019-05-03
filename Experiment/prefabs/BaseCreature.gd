@@ -66,7 +66,7 @@ onready var shoot_cooldown: float = 1.0/fire_rate
 func is_dead() -> bool:
 	return health <= 0
 
-func take_damage(damage_amount: int, source_direction: Vector2) -> void:
+func take_damage(damage_amount: int, source_direction = Vector2()) -> void:
 	health -= damage_amount
 
 

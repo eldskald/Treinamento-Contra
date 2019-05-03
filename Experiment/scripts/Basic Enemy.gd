@@ -85,7 +85,7 @@ func _process(delta):
 	velocity = move_and_slide(velocity)
 #	pass
 
-func _do_damage(damage):
+func take_damage(damage, direction = Vector2()):
 	health -= damage
 
 func kill():

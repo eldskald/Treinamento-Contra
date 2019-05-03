@@ -19,6 +19,7 @@ export(float) var DODGE_INVINCIBILITY = 120        # Time in miliseconds of invi
 export(float) var HEALING_TIME = 1000              # Time in miliseconds the player must hold the heal button to heal.
 export(float) var RATE_OF_FIRE = 400               # Cooldown in miliseconds before being able to fire again.
 export(float) var DAMAGE_INVINCIBILITY = 1000      # Invincibility time after taking damage.
+export(PackedScene) var bullet
 
 var velocity = Vector2()                # Player's velocity vector.
 var hitPoints = 2 * HEARTS              # Player's current hit points. The maximum is twice the HEARTS value.
@@ -63,7 +64,6 @@ var leftWall2 = 0             # Counts how many bodies the left wall detector 2 
 var rightWall = 0             # Counts how many bodies the right wall detector finds.
 var rightWall2 = 0            # Counts how many bodies the right wall detector 2 finds.
 
-var bullet = preload("res://prefabs/Bullet.tscn")        # Projectile prefab shot by the player.
 var shootingDirection = Vector2(1, 0)                    # The direction the player is shooting.
 var shootingCooldown = 0                                 # Timer to shoot again.
 

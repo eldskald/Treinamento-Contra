@@ -18,6 +18,9 @@ func _on_LifeTimer_timeout():
 func destroy():
 	queue_free()
 
+func move(direction):
+	move_and_slide(direction*speed)
+
 
 func _on_HurtBox_body_entered(body):
 	if body.is_in_group(hurt_group):
