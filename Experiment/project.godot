@@ -14,14 +14,14 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://prefabs/BaseCreature.gd"
 }, {
-"base": "BaseCreature",
-"class": "BaseEnemy",
+"base": "KinematicBody2D",
+"class": "BaseProjectile",
 "language": "GDScript",
-"path": "res://prefabs/Enemies/Base Enemy/BaseEnemy.gd"
+"path": "res://prefabs/BaseProjectile/BaseProjectile.gd"
 } ]
 _global_script_class_icons={
 "BaseCreature": "",
-"BaseEnemy": ""
+"BaseProjectile": ""
 }
 
 [application]
