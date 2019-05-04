@@ -1,8 +1,118 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://prefabs/BaseCreature.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/Player.gd" type="Script" id=2]
+[ext_resource path="res://sprites/SmallPurple.png" type="Texture" id=3]
 
-[node name="Player" index="0" instance=ExtResource( 1 )]
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 16, 1 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 16, 1 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 1, 16 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 1, 16 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 16, 16 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 16, 16 )
+
+[node name="Player" groups=[
+"player",
+] instance=ExtResource( 1 )]
+collision_layer = 3
+collision_mask = 3
 script = ExtResource( 2 )
-bullet = null
+max_health = 6
+move_speed = 300.0
+base_acceleration = 1400.0
+base_gravity = 1800.0
+jump_height = 100.0
+gliding_speed = 50.0
+diving_speed = 1200.0
+wall_sliding_speed = 100.0
+dodge_distance = 128.0
+dodge_time = 0.15
+early_jump_time = 0.08
+coyote_jump_time = 0.08
+
+[node name="Detectors" parent="." index="0"]
+editor/display_folded = true
+
+[node name="Up" parent="Detectors" index="0"]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/Up" index="0"]
+position = Vector2( 0, -16 )
+shape = SubResource( 1 )
+
+[node name="Down" parent="Detectors" index="1"]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/Down" index="0"]
+position = Vector2( 0, 16 )
+shape = SubResource( 2 )
+
+[node name="Left" parent="Detectors" index="2"]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/Left" index="0"]
+position = Vector2( -16, 0 )
+shape = SubResource( 3 )
+
+[node name="Right" parent="Detectors" index="3"]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/Right" index="0"]
+position = Vector2( 16, 0 )
+shape = SubResource( 4 )
+
+[node name="LeftWall" type="Area2D" parent="Detectors" index="4"]
+editor/display_folded = true
+visible = false
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/LeftWall" index="0"]
+position = Vector2( -32, 0 )
+shape = SubResource( 5 )
+
+[node name="RightWall" type="Area2D" parent="Detectors" index="5"]
+editor/display_folded = true
+visible = false
+input_pickable = false
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detectors/RightWall" index="0"]
+position = Vector2( 32, 0 )
+shape = SubResource( 6 )
+
+[node name="Sprite" parent="." index="1"]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 3 )
+
+[node name="Hitbox" type="CollisionShape2D" parent="." index="2"]
+visible = false
+shape = SubResource( 7 )
+
+[node name="State" type="Node" parent="." index="3"]
