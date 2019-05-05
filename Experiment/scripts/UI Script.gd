@@ -3,7 +3,7 @@ extends Control
 var gamePaused = false
 var child
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	
 	# Pausing the game and opening the menu.
 	

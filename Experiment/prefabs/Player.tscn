@@ -59,6 +59,7 @@ angular_damp = 0.0
 shape = SubResource( 3 )
 
 [node name="Left Detector 2" type="Area2D" parent="."]
+editor/display_folded = true
 position = Vector2( -24, 0 )
 input_pickable = false
 gravity_vec = Vector2( 0, 0 )

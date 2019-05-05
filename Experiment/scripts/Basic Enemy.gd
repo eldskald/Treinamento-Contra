@@ -4,7 +4,9 @@ export(float) var maxHealth
 
 export(float) var gravityAccel
 export(float) var SPEED
+# warning-ignore:unused_class_variable
 export(bool) var jumpLedges
+# warning-ignore:unused_class_variable
 export(float) var jumpForce
 
 export(Vector2) var burstRange
@@ -85,6 +87,7 @@ func _process(delta):
 	velocity = move_and_slide(velocity)
 #	pass
 
+# warning-ignore:unused_argument
 func take_damage(damage, direction = Vector2()):
 	health -= damage
 

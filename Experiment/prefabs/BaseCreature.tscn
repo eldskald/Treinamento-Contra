@@ -4,8 +4,11 @@
 
 [node name="BaseCreature" type="KinematicBody2D"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
 
-[node name="Detectors" type="Node" parent="."]
+[node name="Detectors" type="Node2D" parent="."]
 
 [node name="Up" type="Area2D" parent="Detectors"]
 input_pickable = false

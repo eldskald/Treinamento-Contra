@@ -7,8 +7,11 @@ const BASE_STATE: int = 0
 const WALL_CLINGING_STATE: int = 1
 const LEDGE_HANGING_STATE: int = 2
 const LEDGE_JUMPING_STATE: int = 3
-const DIVING_STATE: int = 4
-const DODGING_STATE: int = 5
+const GLIDING_STATE: int = 4
+const DIVING_STATE: int = 5
+const DODGING_STATE: int = 6
+const STAGGERED_STATE: int = 7
+const HEALING_STATE: int = 8
 
 
 
@@ -20,6 +23,8 @@ export(float) var jump_height
 export(float) var gliding_speed
 # warning-ignore:unused_class_variable
 export(float) var diving_speed
+# warning-ignore:unused_class_variable
+export(float) var wall_jump_multiplier
 # warning-ignore:unused_class_variable
 export(float) var wall_sliding_speed
 # warning-ignore:unused_class_variable
@@ -37,10 +42,14 @@ onready var directional_input_actual := Vector2()
 onready var directional_input_old := Vector2()
 onready var base_jump_force: float = sqrt(2*jump_height*base_gravity)
 onready var base_falling_speed: float = sqrt(2*jump_height*base_gravity)
+onready var can_dodge: bool = false
+onready var dodge_direction := Vector2()
 # warning-ignore:unused_class_variable
 onready var is_jumping: bool = false
 # warning-ignore:unused_class_variable
 onready var is_wall_jumping: bool = false
+# warning-ignore:unused_class_variable
+onready var facing: float = 1.0
 
 
 
@@ -50,15 +59,14 @@ func _ready():
 	self.acceleration = base_acceleration
 	self.jump_force = base_jump_force
 	self.max_falling_speed = base_falling_speed
+	self.max_rising_speed = MAX_SPEED
 	self.forced_velocity = 0
 	change_state(BASE_STATE)
 
-
-
 func _physics_process(_delta):
 	get_directional_inputs()
-	
-	print(is_touching_floor())
+	if can_dodge and Input.is_action_just_pressed("ui_dodge"):
+		dodging()
 
 
 # This function checks if the player is pressing any directional button or tilting the left analog stick.
@@ -80,14 +88,13 @@ func get_directional_inputs() -> void:
 		directional_input_actual.x = abs(stick_input.x)/stick_input.x
 	if abs(stick_input.y) >= THUMBSTICK_DEADZONE:
 		directional_input_actual.y = abs(stick_input.y)/stick_input.y
-	################### Tests Required ######################################
+	#########################################################################
 
 
 # This method returns the current state.
 func get_state() -> int:
 	for state in $State.get_children():
 		return state.this_state
-
 
 # This method is used to switch states.
 func change_state(new_state):
@@ -105,46 +112,94 @@ func change_state(new_state):
 	elif new_state == LEDGE_JUMPING_STATE:
 		new_state = preload("res://player/states/LedgeJumping.tscn").instance()
 		$State.add_child(new_state)
+	elif new_state == GLIDING_STATE:
+		new_state = preload("res://player/states/Gliding.tscn").instance()
+		$State.add_child(new_state)
 	elif new_state == DIVING_STATE:
 		new_state = preload("res://player/states/Diving.tscn").instance()
 		$State.add_child(new_state)
-	elif new_state == DODGING_STATE	:
+	elif new_state == DODGING_STATE:
 		new_state = preload("res://player/states/Dodging.tscn").instance()
 		$State.add_child(new_state)
+	elif new_state == STAGGERED_STATE:
+		new_state = preload("res://player/states/Staggered.tscn").instance()
+		$State.add_child(new_state)
+	elif new_state == HEALING_STATE:
+		new_state = preload("res://player/states/Healing.tscn").instance()
+		$State.add_child(new_state)
+
+
+
+# Dodging feature. If dodge_direction is zero, the player won't dodge. Otherwise, it will dodge
+# to the direction the player is facing or the directional inputs the player is giving.
+func dodging() -> void:
+	var state = get_state()
+	
+	################### Getting from diretional inputs #####################
+	if state == BASE_STATE or state == GLIDING_STATE or state == LEDGE_JUMPING_STATE or state == HEALING_STATE:
+		if directional_input_actual != Vector2(0,0):
+			dodge_direction = directional_input_actual
+		else:
+			dodge_direction = Vector2(facing , 0)
+	########################################################################
+	
+	################### Getting from facing only ###########################
+	elif state == WALL_CLINGING_STATE or state == LEDGE_HANGING_STATE:
+		dodge_direction = Vector2(facing , 0)
+	########################################################################
+	
+	################### Can't dodge on these states ########################
+	else:
+		dodge_direction = Vector2(0,0)
+	########################################################################
+	
+	if dodge_direction != Vector2(0,0):
+		change_state(DODGING_STATE)
+
+
 
 # Methods to check if the player is on the floor, touching a wall, etc.
-func is_touching_floor() -> bool:
-	var i = 0
+func on_floor() -> bool:
 	for body in get_down_bodies():
 		if body.is_in_group("floor"):
-			i += 1
-	if i > 0:
-		return true
-	else:
-		return false
-func is_touching_left_wall() -> bool:
-	var i = 0
+			return true
+	return false
+func on_left_wall() -> bool:
 	for body in get_left_bodies():
 		if body.is_in_group("wall"):
-			i += 1
-	if i > 0:
-		return true
-	else:
-		return false
-func is_touching_right_wall() -> bool:
-	var i = 0
+			return true
+	return false
+func on_right_wall() -> bool:
 	for body in get_right_bodies():
 		if body.is_in_group("wall"):
-			i += 1
-	if i > 0:
+			return true
+	return false
+func on_any_wall() -> bool:
+	return on_left_wall() or on_right_wall()
+func is_airborne() -> bool:
+	return not on_floor() and not on_any_wall()
+
+# These next methods find and return ledges the player is touching.
+func find_left_ledge() -> Node:
+	for area in get_left_areas():
+		if area.is_in_group("ledge"):
+			return area
+	return null
+func find_right_ledge() -> Node:
+	for area in get_right_areas():
+		if area.is_in_group("ledge"):
+			return area
+	return null
+
+# This method returns true if the player is touching a ledge on either side.
+func on_any_ledge() -> bool:
+	if find_left_ledge() != null or find_right_ledge() != null:
 		return true
 	else:
 		return false
-func is_airborne() -> bool:
-	return !is_touching_floor() and !is_touching_left_wall() and !is_touching_right_wall()
 
 # These two functions use the larger, second wall detectors. Used on the wall jump feature.
-func is_close_to_left_wall() -> bool:
+func close_to_left_wall() -> bool:
 	var i = 0
 	for body in $Detectors/LeftWall.get_overlapping_bodies():
 		if body.is_in_group("wall"):
@@ -153,7 +208,7 @@ func is_close_to_left_wall() -> bool:
 		return true
 	else:
 		return false
-func is_close_to_right_wall() -> bool:
+func close_to_right_wall() -> bool:
 	var i = 0
 	for body in $Detectors/RightWall.get_overlapping_bodies():
 		if body.is_in_group("wall"):
@@ -162,7 +217,5 @@ func is_close_to_right_wall() -> bool:
 		return true
 	else:
 		return false
-
-
-
-
+func is_close_to_a_wall() -> bool:
+	return not close_to_left_wall() and not close_to_right_wall()

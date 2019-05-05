@@ -1,7 +1,7 @@
 extends KinematicBody2D
 class_name BaseCreature
 
-const MAX_SPEED = 3000
+const MAX_SPEED = 3000.0
 
 
 
