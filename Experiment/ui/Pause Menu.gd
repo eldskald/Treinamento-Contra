@@ -11,7 +11,7 @@ func _physics_process(delta):
 	# Unpausing.
 	if Input.is_action_just_pressed("ui_start") or Input.is_action_just_pressed("ui_select"):
 			get_tree().set_pause(false)
-			get_parent().gamePaused = false
+			get_parent().game_paused = false
 			self.queue_free()
 	
 	# Closing opened submenus.
@@ -26,20 +26,20 @@ func _physics_process(delta):
 			controlsSubmenu = false
 		else:
 			get_tree().set_pause(false)
-			get_parent().gamePaused = false
+			get_parent().game_paused = false
 			self.queue_free()
 
-func _on_resume_pressed():
+func _on_Resume_pressed():
 	get_tree().set_pause(false)
-	get_parent().gamePaused = false
+	get_parent().game_paused = false
 	self.queue_free()
 
-func _on_quit_pressed():
+func _on_Quit_pressed():
 	get_tree().quit()
 
-func _on_controls_pressed():
+func _on_Controls_pressed():
 	if !controlsSubmenu:
-		submenu = preload("res://prefabs/UI Elements/Controls Menu.tscn").instance()
+		submenu = preload("res://ui/Controls Menu.tscn").instance()
 		$Menus.add_child(submenu)
 		submenu.get_node("Scheme 1").connect("pressed", self, "_on_controls_1_pressed")
 		submenu.get_node("Scheme 1").connect("mouse_entered", self, "_on_controls_1_entered")
@@ -69,31 +69,32 @@ func _on_controls_1_pressed():
 	pass
 
 func _on_controls_1_entered():
-	tooltip = preload("res://prefabs/UI Elements/ControlsTooltip1.tscn").instance()
+	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip1.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_2_pressed():
 	pass
 
 func _on_controls_2_entered():
-	tooltip = preload("res://prefabs/UI Elements/ControlsTooltip2.tscn").instance()
+	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip2.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_3_pressed():
 	pass
 
 func _on_controls_3_entered():
-	tooltip = preload("res://prefabs/UI Elements/ControlsTooltip3.tscn").instance()
+	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip3.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_4_pressed():
 	pass
 
 func _on_controls_4_entered():
-	tooltip = preload("res://prefabs/UI Elements/ControlsTooltip4.tscn").instance()
+	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip4.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_all_exited():
 	if tooltip != null:
 		tooltip.queue_free()
 		tooltip = null
+

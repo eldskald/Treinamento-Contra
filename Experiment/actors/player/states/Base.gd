@@ -113,7 +113,7 @@ func cling_to_walls_and_ledges() -> void:
 func deal_with_ledges() -> void:
 	var ledge = player.find_left_ledge()
 	if ledge == null:
-		ledge = player.find_left_ledge()
+		ledge = player.find_right_ledge()
 	if player.position.y - ledge.position.y >= 2:
 			player.position.y = ledge.position.y + 16
 			player.change_state(LEDGE_HANGING_STATE)

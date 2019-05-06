@@ -1,22 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scripts/Pause Menu.gd" type="Script" id=1]
-[ext_resource path="res://fonts/CuteFont-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://ui/Pause Menu.gd" type="Script" id=1]
+[ext_resource path="res://assets/fonts/CuteFont-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://ui/Button.tscn" type="PackedScene" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 64
-font_data = ExtResource( 2 )
-
-[sub_resource type="DynamicFont" id=2]
-size = 42
-font_data = ExtResource( 2 )
-
-[sub_resource type="DynamicFont" id=3]
-size = 42
-font_data = ExtResource( 2 )
-
-[sub_resource type="DynamicFont" id=4]
-size = 42
 font_data = ExtResource( 2 )
 
 [node name="Pause Menu" type="Control"]
@@ -60,45 +49,22 @@ margin_left = 454.0
 margin_right = 570.0
 margin_bottom = 155.0
 
-[node name="Resume" type="Button" parent="Menus/Main Menu"]
+[node name="Resume" parent="Menus/Main Menu" instance=ExtResource( 3 )]
 margin_right = 116.0
 margin_bottom = 49.0
-focus_mode = 0
-custom_fonts/font = SubResource( 2 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Resume"
-flat = true
 
-[node name="Controls" type="Button" parent="Menus/Main Menu"]
+[node name="Controls" parent="Menus/Main Menu" instance=ExtResource( 3 )]
 margin_top = 53.0
 margin_right = 116.0
 margin_bottom = 102.0
-focus_mode = 0
-custom_fonts/font = SubResource( 3 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Controls"
-flat = true
 
-[node name="Quit" type="Button" parent="Menus/Main Menu"]
+[node name="Quit" parent="Menus/Main Menu" instance=ExtResource( 3 )]
 margin_top = 106.0
 margin_right = 116.0
 margin_bottom = 155.0
-focus_mode = 0
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-shortcut_in_tooltip = false
-enabled_focus_mode = 0
 text = "Quit"
-flat = true
-
-[connection signal="pressed" from="Menus/Main Menu/Resume" to="." method="_on_resume_pressed"]
-[connection signal="pressed" from="Menus/Main Menu/Controls" to="." method="_on_controls_pressed"]
-[connection signal="pressed" from="Menus/Main Menu/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Menus/Main Menu/Resume" to="." method="_on_Resume_pressed"]
+[connection signal="pressed" from="Menus/Main Menu/Controls" to="." method="_on_Controls_pressed"]
+[connection signal="pressed" from="Menus/Main Menu/Quit" to="." method="_on_Quit_pressed"]

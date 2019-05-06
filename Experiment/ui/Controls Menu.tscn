@@ -1,64 +1,31 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://fonts/CuteFont-Regular.ttf" type="DynamicFontData" id=1]
-
-[sub_resource type="DynamicFont" id=1]
-size = 42
-font_data = ExtResource( 1 )
+[ext_resource path="res://ui/Button.tscn" type="PackedScene" id=1]
 
 [node name="Controls Menu" type="VBoxContainer"]
 margin_right = 159.0
 margin_bottom = 155.0
 alignment = 1
 
-[node name="Scheme 1" type="Button" parent="."]
+[node name="Scheme 1" parent="." instance=ExtResource( 1 )]
 margin_right = 159.0
 margin_bottom = 49.0
-focus_mode = 0
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Scheme 1"
-flat = true
 
-[node name="Scheme 2" type="Button" parent="."]
+[node name="Scheme 2" parent="." instance=ExtResource( 1 )]
 margin_top = 53.0
 margin_right = 159.0
 margin_bottom = 102.0
-focus_mode = 0
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Scheme 2"
-flat = true
 
-[node name="Scheme 3" type="Button" parent="."]
+[node name="Scheme 3" parent="." instance=ExtResource( 1 )]
 margin_top = 106.0
 margin_right = 159.0
 margin_bottom = 155.0
-focus_mode = 0
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Scheme 3"
-flat = true
 
-[node name="Scheme 4" type="Button" parent="."]
+[node name="Scheme 4" parent="." instance=ExtResource( 1 )]
 margin_top = 159.0
 margin_right = 159.0
 margin_bottom = 208.0
-focus_mode = 0
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.0862745, 0.113725, 0.419608, 1 )
-custom_colors/font_color_hover = Color( 0.254902, 0.278431, 0.541176, 1 )
-custom_colors/font_color_pressed = Color( 0.505882, 0.533333, 0.835294, 1 )
-enabled_focus_mode = 0
 text = "Scheme 4"
-flat = true
-

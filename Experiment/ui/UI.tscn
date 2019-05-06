@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://scripts/UI Script.gd" type="Script" id=1]
-[ext_resource path="res://assets/sprites/health.png" type="Texture" id=2]
+[ext_resource path="res://ui/UI.gd" type="Script" id=1]
+[ext_resource path="res://assets/textures/ui elements/health.png" type="Texture" id=2]
 
 [node name="UI" type="Control" groups=[
 "UI",
@@ -24,7 +24,7 @@ margin_right = 80.0
 margin_bottom = 80.0
 texture = ExtResource( 2 )
 
-[node name="Health Packs" type="VBoxContainer" parent="."]
+[node name="HealthPacks" type="VBoxContainer" parent="."]
 margin_left = 39.0
 margin_top = 90.0
 margin_right = 39.0
