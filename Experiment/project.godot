@@ -12,29 +12,47 @@ _global_script_classes=[ {
 "base": "KinematicBody2D",
 "class": "BaseCreature",
 "language": "GDScript",
-"path": "res://prefabs/BaseCreature.gd"
+"path": "res://actors/BaseCreature.gd"
 }, {
 "base": "BaseCreature",
 "class": "BaseEnemy",
 "language": "GDScript",
-"path": "res://prefabs/Enemies/Base Enemy/BaseEnemy.gd"
+"path": "res://actors/enemies/base enemy/BaseEnemy.gd"
 }, {
 "base": "KinematicBody2D",
 "class": "BaseProjectile",
 "language": "GDScript",
-"path": "res://prefabs/BaseProjectile/BaseProjectile.gd"
+"path": "res://actors/BaseProjectile.gd"
+}, {
+"base": "Object",
+"class": "Locator",
+"language": "GDScript",
+"path": "res://common/Locator.gd"
+}, {
+"base": "Node",
+"class": "State",
+"language": "GDScript",
+"path": "res://actors/player/states/State.gd"
 } ]
 _global_script_class_icons={
 "BaseCreature": "",
 "BaseEnemy": "",
-"BaseProjectile": ""
+"BaseProjectile": "",
+"Locator": "",
+"State": ""
 }
 
 [application]
 
 config/name="Experiment"
-run/main_scene="res://scenes/scene1.tscn"
+run/main_scene="res://levels/TestChamber.tscn"
 config/icon="res://icon.png"
+
+[debug]
+
+gdscript/warnings/unused_variable=false
+gdscript/warnings/unused_class_variable=false
+gdscript/warnings/unused_argument=false
 
 [input]
 

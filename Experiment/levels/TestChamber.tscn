@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://actors/player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/textures/level related/SmallBlack.png" type="Texture" id=2]
+[ext_resource path="res://levels/tileset/block.tscn" type="PackedScene" id=3]
+[ext_resource path="res://levels/tileset/ledge.tscn" type="PackedScene" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 32, 32 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 32, 32 )
+
+[node name="TestChamber" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 16, 272 )
+
+[node name="Blocks" type="Node" parent="."]
+
+[node name="Block01" type="Sprite" parent="Blocks"]
+editor/display_folded = true
+position = Vector2( -96, 144 )
+scale = Vector2( 1, 7.5 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Blocks/Block01" groups=[
+"floor",
+"block",
+"wall",
+]]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block01/StaticBody2D" groups=[
+"floor",
+"block",
+"wall",
+]]
+shape = SubResource( 1 )
+
+[node name="Block02" type="Sprite" parent="Blocks"]
+editor/display_folded = true
+position = Vector2( 128, 352 )
+scale = Vector2( 6, 1 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Blocks/Block02" groups=[
+"floor",
+"block",
+"wall",
+]]
+editor/display_folded = true
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block02/StaticBody2D" groups=[
+"floor",
+"block",
+"wall",
+]]
+shape = SubResource( 2 )
+
+[node name="Block03" parent="Blocks" instance=ExtResource( 3 )]
+position = Vector2( 448, 288 )
+scale = Vector2( 4, 3 )
+
+[node name="Block04" parent="Blocks" instance=ExtResource( 3 )]
+position = Vector2( 688, 96 )
+scale = Vector2( 0.5, 6 )
+
+[node name="Block05" parent="Blocks" instance=ExtResource( 3 )]
+position = Vector2( 512, -128 )
+scale = Vector2( 20, 1 )
+
+[node name="Block06" parent="Blocks" instance=ExtResource( 3 )]
+position = Vector2( 976, 240 )
+scale = Vector2( 5.5, 4.5 )
+
+[node name="Block07" parent="Blocks" instance=ExtResource( 3 )]
+position = Vector2( 256, 288 )
+scale = Vector2( 2, 1 )
+
+[node name="ledge" parent="Blocks" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( 321, 193 )
+
+[node name="ledge2" parent="Blocks" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( 575, 193 )
+
+[node name="ledge3" parent="Blocks" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( 801, 97 )
+
+[node name="ledge4" parent="Blocks" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( 1151, 97 )
+
+[node name="ledge5" parent="Blocks" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( 193, 257 )
