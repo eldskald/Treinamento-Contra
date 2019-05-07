@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://actors/BaseProjectile.gd"
 }, {
+"base": "Node",
+"class": "BaseState",
+"language": "GDScript",
+"path": "res://actors/enemies/base enemy/StateMachine/BaseState.gd"
+}, {
 "base": "Object",
 "class": "Locator",
 "language": "GDScript",
@@ -38,6 +43,7 @@ _global_script_class_icons={
 "BaseCreature": "",
 "BaseEnemy": "",
 "BaseProjectile": "",
+"BaseState": "",
 "Locator": "",
 "State": ""
 }
