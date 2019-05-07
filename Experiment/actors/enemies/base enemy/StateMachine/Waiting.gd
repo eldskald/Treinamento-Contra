@@ -1,11 +1,10 @@
 extends BaseState
 
-func exit():
-	creature_ai.pop_state()
-
 func routine():
-	if (player_actor.position - creature.position).lenght() > creature.vision_range:
+	if !player_in_range():
 		pass
 	
 	else:
+		next_state = creature_ai.state("AttackWindUp")
+		print("inRange")
 		exit()

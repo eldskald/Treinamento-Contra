@@ -1,10 +1,7 @@
 extends BaseEnemy
 
-export(float) var vision_range
-
 func _ready():
-	pass # Replace with function body.
+	self.gravity = 1000
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func attack(gun: PackedScene, direction: Vector2) -> void:
+	print("shoot")
