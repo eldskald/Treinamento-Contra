@@ -1,6 +1,9 @@
 extends BaseState
 
-func routine():
+func enter():
+	creature.is_attacking = true
 	next_state = creature_ai.state("Attack")
-	exit()
+	$Timer.start()
 
+func _on_Timer_timeout():
+	exit()

@@ -122,5 +122,5 @@ position = Vector2( 193, 257 )
 
 [node name="GroundEnemy" parent="." instance=ExtResource( 7 )]
 position = Vector2( 449.35, 95 )
-vision_range = 1000.0
+vision_range = 250.0
 

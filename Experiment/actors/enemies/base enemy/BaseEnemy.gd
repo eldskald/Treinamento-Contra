@@ -18,7 +18,7 @@ func check_contact() -> void:
 			var damage_direction = body.position - self.position
 			body.take_damage(contact_damage, damage_direction)
 
-func attack(gun: PackedScene, direction: Vector2) -> void:
+func attack(direction: Vector2) -> void:
 	pass
 
 func parse():

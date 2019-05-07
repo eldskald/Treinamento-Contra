@@ -7,7 +7,7 @@ export(String) var hurt_group
 
 export(int) var damage
 
-var direction:Vector2
+var shoot_direction:Vector2
 
 func _ready():
 	$LifeTimer.start(life_time)
@@ -24,6 +24,6 @@ func move(direction):
 
 func _on_HurtBox_body_entered(body):
 	if body.is_in_group(hurt_group):
-		body.take_damage(damage, direction)
+		body.take_damage(damage, shoot_direction)
 		destroy()
 		queue_free()

@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://actors/BaseProjectile.tscn" type="PackedScene" id=1]
+[ext_resource path="res://actors/enemies/enemy projectile/BasicEnemyProjectile.gd" type="Script" id=2]
+
+
+[node name="BasicEnemyProjectile" instance=ExtResource( 1 )]
+scale = Vector2( 1, 0.32 )
+script = ExtResource( 2 )
+speed = 100.0
+life_time = 10.0
+hurt_group = "player"
+

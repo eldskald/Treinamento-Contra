@@ -1,4 +1,4 @@
 extends BaseProjectile
 
 func _physics_process(delta):
-	move(direction)
+	move(shoot_direction)

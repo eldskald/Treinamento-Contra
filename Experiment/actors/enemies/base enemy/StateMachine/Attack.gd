@@ -1,7 +1,9 @@
 extends BaseState
 
+
 func enter():
-	print("shooooooooot")
+	var direction = (self.locator.find_entity("player").position - creature.position).normalized()
+	creature.attack(direction)
 
 func routine():
 	if !is_attacking():
