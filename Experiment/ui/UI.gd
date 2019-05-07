@@ -1,6 +1,8 @@
 extends Control
 
-var game_paused = false
+
+
+onready var game_paused = false
 var child
 
 func _physics_process(_delta):
