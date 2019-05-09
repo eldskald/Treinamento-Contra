@@ -2,7 +2,8 @@ extends BaseState
 
 
 func enter():
-	var direction = (self.locator.get("player").position - creature.position).normalized()
+	var direction = (self.locator.get("player").position - 
+			creature.position).normalized()
 	creature.attack(direction)
 
 func routine():
