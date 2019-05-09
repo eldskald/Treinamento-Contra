@@ -4,7 +4,7 @@ class_name BaseState
 onready var creature_ai = get_parent()
 onready var creature = creature_ai.get_parent()
 onready var next_state: Node
-onready var locator = Locator.new(get_tree())
+onready var locator = get_parent().get_node("Finder")
 
 func enter():
 	pass
@@ -23,5 +23,5 @@ func is_attacking() -> bool:
 func player_in_range() -> bool:
 	if !locator.has_entity("player"):
 		return false
-	var player_creature_distance = (locator.find_entity("player").position - creature.position).length()
+	var player_creature_distance = (locator.get("player").position - creature.position).length()
 	return player_creature_distance <= creature.vision_range

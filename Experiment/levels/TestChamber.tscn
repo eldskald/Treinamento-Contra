@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://common/Main.tscn" type="PackedScene" id=1]
 [ext_resource path="res://actors/player/Player.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://levels/tileset/block.tscn" type="PackedScene" id=4]
 [ext_resource path="res://levels/tileset/ledge.tscn" type="PackedScene" id=5]
 [ext_resource path="res://hud/HUD.tscn" type="PackedScene" id=6]
+[ext_resource path="res://actors/enemies/ground enemy/GroundEnemy.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 32, 32 )
@@ -34,8 +35,8 @@ __meta__ = {
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Blocks/Block01" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 editor/display_folded = true
 visible = false
@@ -44,8 +45,8 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block01/StaticBody2D" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 shape = SubResource( 1 )
 
@@ -60,8 +61,8 @@ __meta__ = {
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Blocks/Block02" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 editor/display_folded = true
 visible = false
@@ -70,8 +71,8 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Blocks/Block02/StaticBody2D" groups=[
 "floor",
-"block",
 "wall",
+"block",
 ]]
 shape = SubResource( 2 )
 
@@ -118,3 +119,7 @@ position = Vector2( 193, 257 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="CanvasLayer" instance=ExtResource( 6 )]
+
+[node name="GroundEnemy" parent="." instance=ExtResource( 7 )]
+position = Vector2( 418, 114 )
+vision_range = 500.0

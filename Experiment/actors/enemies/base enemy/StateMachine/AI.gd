@@ -1,7 +1,7 @@
 extends Node
 
-onready var locator = Locator.new(get_tree())
-onready var player_actor = locator.find_entity("player")
+onready var locator = $Finder
+onready var player_actor = $Finder.get("player")
 onready var creature = get_parent()
 
 var states = []
