@@ -10,8 +10,7 @@ const LEDGE_JUMPING_STATE: int = 3
 const GLIDING_STATE: int = 4
 const DIVING_STATE: int = 5
 const DODGING_STATE: int = 6
-const STAGGERED_STATE: int = 7
-const HEALING_STATE: int = 8
+const HEALING_STATE: int = 7
 
 
 
@@ -39,7 +38,7 @@ export(float) var coyote_jump_time
 export(int) var total_health_packs
 # warning-ignore:unused_class_variable
 export(float) var healing_time
-
+export(float) var invincibility_time
 
 
 onready var directional_input_actual := Vector2()
@@ -56,6 +55,8 @@ onready var is_wall_jumping: bool = false
 onready var facing: float = 1.0
 # warning-ignore:unused_class_variable
 onready var packs_available: int = total_health_packs
+# warning-ignore:unused_class_variable
+onready var stagger_direction: int = 0
 
 
 
@@ -67,7 +68,12 @@ func _ready():
 	self.max_falling_speed = base_falling_speed
 	self.max_rising_speed = MAX_SPEED
 	self.forced_velocity = 0
+	$InvincibilityTimer.wait_time = invincibility_time
 	change_state(BASE_STATE)
+	
+	$Finder.get("hud").update_display()
+
+
 
 func _physics_process(_delta):
 	get_directional_inputs()
@@ -128,9 +134,6 @@ func change_state(new_state):
 	elif new_state == DODGING_STATE:
 		new_state = preload("res://actors/player/states/Dodging.tscn").instance()
 		$State.add_child(new_state)
-	elif new_state == STAGGERED_STATE:
-		new_state = preload("res://actors/player/states/Staggered.tscn").instance()
-		$State.add_child(new_state)
 	elif new_state == HEALING_STATE:
 		new_state = preload("res://actors/player/states/Healing.tscn").instance()
 		$State.add_child(new_state)
@@ -165,6 +168,44 @@ func dodging() -> void:
 
 
 
+# Invincibility feature. When the player takes damage, the player becomes invincible for
+# invincibility_time amount of seconds, set on the export. No knockback. The source_direction
+# vector is used to determine if the player is bouncing off of a bounceable bullet.
+func take_damage(damage_amount: int, source_direction = Vector2()) -> void:
+	if PI/4 <= source_direction.angle() <= 3*PI/4 and has_bounceable_projectile_underneath():
+		if get_state() == DIVING_STATE:
+			bounce()
+		elif get_state() == BASE_STATE:
+			var timer = get_node("State/Base/EarlyJumpTimer")
+			if not timer.is_stopped:
+				bounce()
+		else:
+			got_hit(damage_amount)
+	else:
+		got_hit(damage_amount)
+
+func bounce() -> void:
+	self.velocity.y -= jump_force
+	is_jumping = true
+	can_dodge = true
+
+func got_hit(damage_amount: int) -> void:
+	if not is_invincible():
+		self.current_hp -= damage_amount
+		$InvincibilityTimer.start()
+		$Finder.get("hud").update_display()
+
+func is_invincible() -> bool:
+	return not $InvincibilityTimer.is_stopped()
+
+func has_bounceable_projectile_underneath() -> bool:
+	for area in self.get_down_areas():
+		if area.is_in_group("bounceable"):
+			return true
+	return false
+
+
+
 # Methods to check if the player is on the floor, touching a wall, etc.
 func on_floor() -> bool:
 	for body in get_down_bodies():
@@ -188,6 +229,8 @@ func on_any_wall() -> bool:
 	return on_left_wall() or on_right_wall()
 func is_airborne() -> bool:
 	return not on_floor() and not on_any_wall()
+
+
 
 # These next methods find and return ledges the player is touching.
 func find_left_ledge() -> Node:

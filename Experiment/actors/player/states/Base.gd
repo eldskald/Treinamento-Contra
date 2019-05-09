@@ -1,4 +1,4 @@
-extends State
+extends PlayerState
 
 onready var can_coyote_jump: bool = false
 

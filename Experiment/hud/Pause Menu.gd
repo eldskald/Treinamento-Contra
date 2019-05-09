@@ -2,13 +2,11 @@ extends Control
 
 onready var submenu_opened = false
 onready var controls_submenu = false
-onready var locator = Locator.new(get_tree())
 
 var submenu
 var tooltip
 
-#warning-ignore:unused_argument
-func _physics_process(delta):
+func _physics_process(_delta):
 	
 	# Unpausing.
 	if Input.is_action_just_pressed("ui_start") or Input.is_action_just_pressed("ui_select"):
@@ -41,7 +39,7 @@ func _on_Quit_pressed():
 
 func _on_Controls_pressed():
 	if not controls_submenu:
-		submenu = preload("res://ui/Controls Menu.tscn").instance()
+		submenu = preload("res://hud/Controls Menu.tscn").instance()
 		$Menus.add_child(submenu)
 		submenu.get_node("Scheme 1").connect("pressed", self, "_on_controls_1_pressed")
 		submenu.get_node("Scheme 1").connect("mouse_entered", self, "_on_controls_1_entered")
@@ -65,24 +63,21 @@ func _on_Controls_pressed():
 		controls_submenu = false
 
 func _on_controls_1_pressed():
-	var main = locator.find_entity("main")
-	main.change_mouse_and_keyboard(1)
+	$Finder.get("main").change_mouse_and_keyboard(1)
 
 func _on_controls_1_entered():
 	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip2.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_2_pressed():
-	var main = locator.find_entity("main")
-	main.change_mouse_and_keyboard(2)
+	$Finder.get("main").change_mouse_and_keyboard(2)
 
 func _on_controls_2_entered():
 	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip3.tscn").instance()
 	add_child(tooltip)
 
 func _on_controls_3_pressed():
-	var main = locator.find_entity("main")
-	main.change_mouse_and_keyboard(3)
+	$Finder.get("main").change_mouse_and_keyboard(3)
 
 func _on_controls_3_entered():
 	tooltip = preload("res://assets/textures/ui elements/ControlsTooltip4.tscn").instance()

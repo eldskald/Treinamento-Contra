@@ -19,6 +19,7 @@ func destroy():
 	queue_free()
 
 func move(direction):
+# warning-ignore:return_value_discarded
 	move_and_slide(direction*speed)
 
 

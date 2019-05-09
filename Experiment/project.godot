@@ -29,23 +29,23 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://actors/enemies/base enemy/StateMachine/BaseState.gd"
 }, {
-"base": "Object",
-"class": "Locator",
+"base": "Node",
+"class": "Finder",
 "language": "GDScript",
-"path": "res://common/Locator.gd"
+"path": "res://common/Finder.gd"
 }, {
 "base": "Node",
-"class": "State",
+"class": "PlayerState",
 "language": "GDScript",
-"path": "res://actors/player/states/State.gd"
+"path": "res://actors/player/states/PlayerState.gd"
 } ]
 _global_script_class_icons={
 "BaseCreature": "",
 "BaseEnemy": "",
 "BaseProjectile": "",
 "BaseState": "",
-"Locator": "",
-"State": ""
+"Finder": "",
+"PlayerState": ""
 }
 
 [application]
@@ -59,6 +59,7 @@ config/icon="res://icon.png"
 gdscript/warnings/unused_variable=false
 gdscript/warnings/unused_class_variable=false
 gdscript/warnings/unused_argument=false
+gdscript/warnings/return_value_discarded=false
 
 [input]
 

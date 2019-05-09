@@ -1,4 +1,4 @@
-extends State
+extends PlayerState
 
 
 
@@ -20,3 +20,4 @@ func stop_healing() -> void:
 func _on_Timer_timeout():
 	player.current_hp = player.hit_points
 	player.packs_available -= 1
+	player.get_node("Finder").get("hud").update_display()

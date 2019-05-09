@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://ui/Button.tscn" type="PackedScene" id=1]
+[ext_resource path="res://hud/Button.tscn" type="PackedScene" id=1]
 
 [node name="Controls Menu" type="VBoxContainer"]
 margin_right = 159.0
