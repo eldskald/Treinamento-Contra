@@ -172,7 +172,7 @@ func dodging() -> void:
 # invincibility_time amount of seconds, set on the export. No knockback. The source_direction
 # vector is used to determine if the player is bouncing off of a bounceable bullet.
 func take_damage(damage_amount: int, source_direction = Vector2()) -> void:
-	if PI/4 <= source_direction.angle() <= 3*PI/4 and has_bounceable_projectile_underneath():
+	if interval(source_direction.angle(), 3*PI/4, PI/4) and has_bounceable_projectile_underneath():
 		if get_state() == DIVING_STATE:
 			bounce()
 		elif get_state() == BASE_STATE:
@@ -279,3 +279,13 @@ func close_to_right_wall() -> bool:
 
 func is_close_to_a_wall() -> bool:
 	return not close_to_left_wall() and not close_to_right_wall()
+
+
+
+# This function checks if the first value is between the next two.
+func interval(x: float, a: float, b: float) -> bool:
+	if a < b:
+		return a <= x and x <= b
+	else:
+		return b <= x and x <= a
+
